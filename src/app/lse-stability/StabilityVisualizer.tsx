@@ -30,8 +30,8 @@ export default function StabilityVisualizer() {
             <h2 className="text-sm font-semibold text-slate-700 uppercase tracking-wider mb-3">Formulation</h2>
             <div className="text-sm">
               <BlockMath math="A\mathbf{x}=\mathbf{b}" />
-              <BlockMath math="\mathbf{b^*} = A(A^*A)^{-1}A^*\mathbf{b}" />
-              <BlockMath math="\kappa_{b \mapsto \hat{y}} = \frac{1}{\cos \theta}" />
+              <BlockMath math="\mathbf{\hat{y}} = A(A^*A)^{-1}A^*\mathbf{b}" />
+              <BlockMath math="\kappa_{b \mapsto \hat{y}} = \frac{||\delta \hat{y}|| / ||\hat{y}||}{||\delta b|| / ||b||} = \frac{1}{\cos \theta}" />
             </div>
           </section>
 
@@ -93,20 +93,6 @@ export default function StabilityVisualizer() {
               </div>
             </div>
           </section>
-
-          {/* Readout */}
-          <section className="pt-4 border-t border-slate-100">
-            <div className="grid grid-cols-2 gap-3">
-              <div className="bg-blue-50/50 border border-blue-100 rounded p-2 text-center">
-                <div className="text-[10px] uppercase font-semibold text-blue-600 mb-1">||ŷ|| = cos(θ)</div>
-                <div className="font-mono text-sm font-medium text-slate-800">{cosTheta.toFixed(4)}</div>
-              </div>
-              <div className={conditionNumber > 10 ? "bg-red-50/50 border border-red-100 rounded p-2 text-center" : "bg-orange-50/50 border border-orange-100 rounded p-2 text-center"}>
-                <div className="text-[10px] uppercase font-semibold text-orange-600 mb-1">Sensitivity = 1/cos(θ)</div>
-                <div className="font-mono text-sm font-medium text-slate-800">{conditionNumber.toFixed(4)}</div>
-              </div>
-            </div>
-          </section>
         </div>
       </div>
 
@@ -114,8 +100,20 @@ export default function StabilityVisualizer() {
       <div className="flex-1 relative bg-slate-50 h-[500px] xl:h-auto min-h-0">
         <Scene3D thetaRad={thetaRad} phiRad={(phiDeg * Math.PI) / 180} />
 
+        {/* Overlay Metrics */}
+        <div className="absolute top-6 right-6 flex flex-col gap-3 pointer-events-none">
+          <div className="bg-white/90 backdrop-blur border border-slate-200 shadow-sm rounded-lg p-3 w-48 text-center">
+            <div className="text-[10px] uppercase font-semibold text-blue-600 mb-1 tracking-wider">||ŷ|| = cos(θ)</div>
+            <div className="font-mono text-lg font-medium text-slate-800">{cosTheta.toFixed(4)}</div>
+          </div>
+          <div className={`bg-white/90 backdrop-blur border shadow-sm rounded-lg p-3 w-48 text-center transition-colors ${conditionNumber > 10 ? "border-red-200 bg-red-50/90" : "border-slate-200"}`}>
+            <div className={`text-[10px] uppercase font-semibold mb-1 tracking-wider ${conditionNumber > 10 ? "text-red-600" : "text-orange-600"}`}>Sensitivity = 1/cos(θ)</div>
+            <div className="font-mono text-lg font-medium text-slate-800">{conditionNumber.toFixed(4)}</div>
+          </div>
+        </div>
+
         {/* Helper overlay */}
-        <div className="absolute bottom-4 right-4 bg-white/80 backdrop-blur text-xs text-slate-500 px-3 py-2 rounded shadow-sm border border-slate-100 pointer-events-none">
+        <div className="absolute bottom-6 right-6 bg-white/80 backdrop-blur text-xs text-slate-500 px-3 py-2 rounded shadow-sm border border-slate-100 pointer-events-none">
           Click & drag to rotate camera
         </div>
       </div>

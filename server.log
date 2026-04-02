@@ -27,3 +27,6 @@
  GET / 200 in 2.2s (next.js: 669ms, application-code: 1486ms)
  GET /lse-stability 200 in 204ms (next.js: 73ms, application-code: 130ms)
 [browser] THREE.THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+ GET / 200 in 719ms (next.js: 68ms, application-code: 651ms)
+ GET /lse-stability 200 in 99ms (next.js: 32ms, application-code: 67ms)
+[browser] THREE.THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.

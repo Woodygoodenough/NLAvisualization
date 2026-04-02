@@ -18,12 +18,17 @@ const VectorArrow = ({ start, end, color, label, showLabel = true }: { start: TH
 
   dir.normalize();
 
+  // Position label at the midpoint of the vector, slightly shifted "up" so it rests cleanly on top of the line
+  const midPoint = start.clone().lerp(end, 0.5);
+  // Add a tiny vertical offset so the label doesn't intersect the line exactly
+  midPoint.y += 0.05;
+
   return (
     <group>
       <arrowHelper args={[dir, start, length, color, Math.min(length * 0.2, 0.1), Math.min(length * 0.2, 0.1) * 0.5]} />
       {showLabel && (
-        <Html position={end.clone().add(dir.clone().multiplyScalar(0.1))} center style={{ pointerEvents: 'none' }}>
-          <div className="font-mono text-xs font-bold px-1 py-0.5 rounded bg-white/70 backdrop-blur-sm border border-white/40 shadow-sm" style={{ color, textShadow: '0 0 2px white' }}>
+        <Html position={midPoint} center style={{ pointerEvents: 'none' }}>
+          <div className="font-mono text-[10px] font-bold px-1 py-0.5 rounded bg-white/80 backdrop-blur-sm border border-white/60 shadow-sm" style={{ color }}>
             {label}
           </div>
         </Html>
