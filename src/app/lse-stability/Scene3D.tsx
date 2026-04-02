@@ -100,79 +100,77 @@ export default function Scene3D({ thetaRad, phiRad }: Scene3DProps) {
       </group>
 
       {/* Core Geometry */}
-      <Center>
+      <group>
+        {/* Origin marker */}
+        <mesh>
+          <sphereGeometry args={[0.02, 16, 16]} />
+          <meshBasicMaterial color="#334155" />
+        </mesh>
+
+        {/* b vector */}
+        <VectorArrow start={new THREE.Vector3(0,0,0)} end={b} color="#3b82f6" label="b" />
+
+        {/* y vector (projection) */}
+        <VectorArrow start={new THREE.Vector3(0,0,0)} end={y} color="#10b981" label="ŷ" />
+
+        {/* Orthogonal projection segment */}
+        <Line
+          points={[b, y]}
+          color="#94a3b8"
+          lineWidth={1.5}
+          dashed
+          dashScale={10}
+          dashSize={0.1}
+        />
+
+        {/* Theta Arc */}
+        {(() => {
+            const arcRadius = 0.2;
+            const arcPoints = [];
+            const segments = 20;
+            for(let i=0; i<=segments; i++) {
+              const t = i / segments; // 0 to 1
+              // spherical interpolation
+              const p = new THREE.Vector3().copy(yDir).lerp(bDir, t).normalize().multiplyScalar(arcRadius);
+              arcPoints.push(p);
+            }
+            return (
+              <group>
+                <Line points={arcPoints} color="#64748b" lineWidth={2} />
+                {/* Theta Label positioned in the middle of the arc */}
+                <Html position={new THREE.Vector3().copy(yDir).lerp(bDir, 0.5).normalize().multiplyScalar(arcRadius + 0.08)} center style={{ pointerEvents: 'none' }}>
+                  <span className="font-serif italic font-bold text-slate-600 text-sm">θ</span>
+                </Html>
+              </group>
+            );
+        })()}
+
+        {/* Perturbations (Delta vectors) */}
         <group>
-          {/* Origin marker */}
-          <mesh>
-            <sphereGeometry args={[0.02, 16, 16]} />
-            <meshBasicMaterial color="#334155" />
-          </mesh>
+          {/* delta_b vector starting at tip of b */}
+          <VectorArrow start={b} end={b_perturbed} color="#ef4444" label="δb" />
 
-          {/* b vector */}
-          <VectorArrow start={new THREE.Vector3(0,0,0)} end={b} color="#3b82f6" label="b" />
+          {/* delta_y vector starting at tip of y */}
+          <VectorArrow start={y} end={y_perturbed} color="#f59e0b" label="δŷ" />
 
-          {/* y vector (projection) */}
-          <VectorArrow start={new THREE.Vector3(0,0,0)} end={y} color="#10b981" label="ŷ" />
-
-          {/* Orthogonal projection segment */}
+          {/* New projected connection to show the perturbed projection */}
           <Line
-            points={[b, y]}
-            color="#94a3b8"
-            lineWidth={1.5}
+            points={[b_perturbed, y_perturbed]}
+            color="#cbd5e1"
+            lineWidth={1}
             dashed
             dashScale={10}
-            dashSize={0.1}
           />
 
-          {/* Theta Arc */}
-          {(() => {
-             const arcRadius = 0.2;
-             const arcPoints = [];
-             const segments = 20;
-             for(let i=0; i<=segments; i++) {
-               const t = i / segments; // 0 to 1
-               // spherical interpolation
-               const p = new THREE.Vector3().copy(yDir).lerp(bDir, t).normalize().multiplyScalar(arcRadius);
-               arcPoints.push(p);
-             }
-             return (
-               <group>
-                 <Line points={arcPoints} color="#64748b" lineWidth={2} />
-                 {/* Theta Label positioned in the middle of the arc */}
-                 <Html position={new THREE.Vector3().copy(yDir).lerp(bDir, 0.5).normalize().multiplyScalar(arcRadius + 0.08)} center style={{ pointerEvents: 'none' }}>
-                   <span className="font-serif italic font-bold text-slate-600 text-sm">θ</span>
-                 </Html>
-               </group>
-             );
-          })()}
-
-          {/* Perturbations (Delta vectors) */}
-          <group>
-            {/* delta_b vector starting at tip of b */}
-            <VectorArrow start={b} end={b_perturbed} color="#ef4444" label="δb" />
-
-            {/* delta_y vector starting at tip of y */}
-            <VectorArrow start={y} end={y_perturbed} color="#f59e0b" label="δŷ" />
-
-            {/* New projected connection to show the perturbed projection */}
-            <Line
-              points={[b_perturbed, y_perturbed]}
-              color="#cbd5e1"
+          {/* Perturbed y vector from origin (faint) */}
+          <Line
+              points={[new THREE.Vector3(0,0,0), y_perturbed]}
+              color="#fcd34d"
               lineWidth={1}
-              dashed
-              dashScale={10}
-            />
-
-            {/* Perturbed y vector from origin (faint) */}
-            <Line
-               points={[new THREE.Vector3(0,0,0), y_perturbed]}
-               color="#fcd34d"
-               lineWidth={1}
-            />
-          </group>
-
+          />
         </group>
-      </Center>
+
+      </group>
     </Canvas>
   );
 }
