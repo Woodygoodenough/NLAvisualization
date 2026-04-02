@@ -32,23 +32,6 @@ const VectorArrow = ({ start, end, color, label, showLabel = true }: { start: TH
   );
 };
 
-// Custom Right Angle Marker component
-const RightAngleMarker = ({ start, dir1, dir2, size = 0.1, color = "#94a3b8" }: { start: THREE.Vector3, dir1: THREE.Vector3, dir2: THREE.Vector3, size?: number, color?: string }) => {
-  // We draw a small L shape from `start` spanning along `dir1` and `dir2`
-  const p1 = start.clone().add(dir1.clone().normalize().multiplyScalar(size));
-  const p2 = start.clone().add(dir2.clone().normalize().multiplyScalar(size));
-  const corner = p1.clone().add(p2.clone().sub(start));
-
-  return (
-    <Line
-      points={[p1, corner, p2]}
-      color={color}
-      lineWidth={1.5}
-      dashed={false}
-    />
-  );
-};
-
 export default function Scene3D({ thetaRad, phiRad }: Scene3DProps) {
   // Define geometric entities
   const bLength = 1.0;
@@ -69,38 +52,20 @@ export default function Scene3D({ thetaRad, phiRad }: Scene3DProps) {
   // Length of orthogonal component = projDist = sin(theta)
   const b = useMemo(() => new THREE.Vector3(yX, projDist, yZ), [yX, projDist, yZ]);
 
+  const bDir = b.clone().normalize();
+  const yDir = y.lengthSq() > 0.001 ? y.clone().normalize() : new THREE.Vector3(1, 0, 0);
+
   // Delta vectors for perturbations
-  // For clarity, let's create a small perturbation delta_b in 3D
-  // and show how it projects to delta_y in the plane.
   const deltaFactor = 0.15; // length of delta_b
 
-  // We want delta_b to be orthogonal to b, pointing mostly "up" to show max perturbation
-  const bDir = b.clone().normalize();
-  // Find a vector orthogonal to b (let's use cross product with X axis, fallback to Z)
-  let ortho = new THREE.Vector3(1, 0, 0).cross(bDir);
-  if (ortho.lengthSq() < 0.01) ortho = new THREE.Vector3(0, 0, 1).cross(bDir);
-  ortho.normalize();
-
-  // To make it clear that a small delta_b can cause a large relative delta_y when theta is large,
-  // we point delta_b mostly along the projection line (vertical/Y-axis) but strictly orthogonal to b.
-  // The direction of maximal amplification is when delta_b is in the plane spanned by b and y.
-  const yDir = y.lengthSq() > 0.001 ? y.clone().normalize() : new THREE.Vector3(1, 0, 0);
-  const planeNormal = bDir.clone().cross(yDir).normalize();
-  let maxPerturbDir = bDir.clone().cross(planeNormal).normalize();
-
-  // Ensure maxPerturbDir points "away" from origin in Y
-  if (maxPerturbDir.y < 0) maxPerturbDir.negate();
-
-  const deltaB = maxPerturbDir.multiplyScalar(deltaFactor);
+  // We want delta_b to be parallel to y (the projection) to maximize the perturbation mapping.
+  // Because it is parallel to the plane Span(A), its projection delta_y is identical to delta_b.
+  const deltaB = yDir.clone().multiplyScalar(deltaFactor);
 
   const b_perturbed = b.clone().add(deltaB);
-  // delta_y is the projection of delta_b onto the XZ plane
-  const deltaY = new THREE.Vector3(deltaB.x, 0, deltaB.z);
+  // delta_y is the projection of delta_b onto the XZ plane, which is exactly delta_b since delta_b is in the XZ plane.
+  const deltaY = deltaB.clone();
   const y_perturbed = y.clone().add(deltaY);
-
-  // Directions for right angle marker at tip of y
-  const dirFromYtoB = new THREE.Vector3(0, 1, 0); // Straight up
-  const dirFromYtoOrigin = y.clone().negate();
 
   return (
     <Canvas camera={{ position: [2, 1.5, 2], fov: 45 }}>
@@ -124,7 +89,7 @@ export default function Scene3D({ thetaRad, phiRad }: Scene3DProps) {
           cellSize={0.5}
           sectionSize={1}
         />
-        <Plane args={[10, 10]} rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.01, 0]}>
+        <Plane args={[10, 10]} rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]}>
           <meshBasicMaterial color="#e0f2fe" transparent opacity={0.3} side={THREE.DoubleSide} depthWrite={false} />
         </Plane>
 
@@ -147,7 +112,7 @@ export default function Scene3D({ thetaRad, phiRad }: Scene3DProps) {
           <VectorArrow start={new THREE.Vector3(0,0,0)} end={b} color="#3b82f6" label="b" />
 
           {/* y vector (projection) */}
-          <VectorArrow start={new THREE.Vector3(0,0,0)} end={y} color="#10b981" label="y = b*" />
+          <VectorArrow start={new THREE.Vector3(0,0,0)} end={y} color="#10b981" label="ŷ" />
 
           {/* Orthogonal projection segment */}
           <Line
@@ -159,13 +124,7 @@ export default function Scene3D({ thetaRad, phiRad }: Scene3DProps) {
             dashSize={0.1}
           />
 
-          {/* Right Angle Marker */}
-          {y.lengthSq() > 0.01 && (
-            <RightAngleMarker start={y} dir1={dirFromYtoB} dir2={dirFromYtoOrigin} />
-          )}
-
-          {/* Theta Arc (simplified as a small line segment or arc from b to y) */}
-          {/* We'll draw an arc near the origin between yDir and bDir */}
+          {/* Theta Arc */}
           {(() => {
              const arcRadius = 0.2;
              const arcPoints = [];
@@ -188,13 +147,12 @@ export default function Scene3D({ thetaRad, phiRad }: Scene3DProps) {
           })()}
 
           {/* Perturbations (Delta vectors) */}
-          {/* Render them slightly transparent and thinner */}
           <group>
             {/* delta_b vector starting at tip of b */}
             <VectorArrow start={b} end={b_perturbed} color="#ef4444" label="δb" />
 
             {/* delta_y vector starting at tip of y */}
-            <VectorArrow start={y} end={y_perturbed} color="#f59e0b" label="δy" />
+            <VectorArrow start={y} end={y_perturbed} color="#f59e0b" label="δŷ" />
 
             {/* New projected connection to show the perturbed projection */}
             <Line

@@ -31,7 +31,7 @@ export default function StabilityVisualizer() {
             <div className="text-sm">
               <BlockMath math="A\mathbf{x}=\mathbf{b}" />
               <BlockMath math="\mathbf{b^*} = A(A^*A)^{-1}A^*\mathbf{b}" />
-              <BlockMath math="\kappa_{b \mapsto y} = \frac{1}{\cos \theta}" />
+              <BlockMath math="\kappa_{b \mapsto \hat{y}} = \frac{1}{\cos \theta}" />
             </div>
           </section>
 
@@ -43,7 +43,7 @@ export default function StabilityVisualizer() {
             </p>
             <ul className="mt-3 text-sm text-slate-600 space-y-1.5 list-disc pl-4 marker:text-slate-400">
               <li>Normalize <span className="font-mono text-xs">||b|| = 1</span></li>
-              <li>Then <span className="font-mono text-xs">||y|| = cos(θ)</span></li>
+              <li>Then <span className="font-mono text-xs">||ŷ|| = cos(θ)</span></li>
               <li>As θ approaches 90°, <span className="font-mono text-xs">cos(θ)</span> becomes small</li>
               <li>So the sensitivity <span className="font-mono text-xs">1/cos(θ)</span> blows up</li>
             </ul>
@@ -61,16 +61,16 @@ export default function StabilityVisualizer() {
                   </label>
                   <span className="text-sm font-mono text-slate-500 bg-slate-100 px-2 py-0.5 rounded">{thetaDeg}°</span>
                 </div>
-                <Slider
-                  defaultValue={[45]}
-                  value={[thetaDeg]}
+                <input
+                  type="range"
+                  value={thetaDeg}
                   min={1}
                   max={89}
                   step={1}
-                  onValueChange={(vals) => setThetaDeg((vals as number[])[0])}
-                  className="w-full"
+                  onChange={(e) => setThetaDeg(parseInt(e.target.value))}
+                  className="w-full accent-slate-800"
                 />
-                <p className="text-xs text-slate-500 leading-snug">Angle between <span className="font-mono">b</span> and its projection <span className="font-mono">y</span>.</p>
+                <p className="text-xs text-slate-500 leading-snug">Angle between <span className="font-mono">b</span> and its projection <span className="font-mono">ŷ</span>.</p>
               </div>
 
               <div className="space-y-3">
@@ -80,14 +80,14 @@ export default function StabilityVisualizer() {
                   </label>
                   <span className="text-sm font-mono text-slate-500 bg-slate-100 px-2 py-0.5 rounded">{phiDeg}°</span>
                 </div>
-                <Slider
-                  defaultValue={[45]}
-                  value={[phiDeg]}
+                <input
+                  type="range"
+                  value={phiDeg}
                   min={0}
                   max={360}
                   step={1}
-                  onValueChange={(vals) => setPhiDeg((vals as number[])[0])}
-                  className="w-full"
+                  onChange={(e) => setPhiDeg(parseInt(e.target.value))}
+                  className="w-full accent-slate-800"
                 />
                 <p className="text-xs text-slate-500 leading-snug">In-plane rotation of the projection.</p>
               </div>
@@ -98,7 +98,7 @@ export default function StabilityVisualizer() {
           <section className="pt-4 border-t border-slate-100">
             <div className="grid grid-cols-2 gap-3">
               <div className="bg-blue-50/50 border border-blue-100 rounded p-2 text-center">
-                <div className="text-[10px] uppercase font-semibold text-blue-600 mb-1">||y|| = cos(θ)</div>
+                <div className="text-[10px] uppercase font-semibold text-blue-600 mb-1">||ŷ|| = cos(θ)</div>
                 <div className="font-mono text-sm font-medium text-slate-800">{cosTheta.toFixed(4)}</div>
               </div>
               <div className={conditionNumber > 10 ? "bg-red-50/50 border border-red-100 rounded p-2 text-center" : "bg-orange-50/50 border border-orange-100 rounded p-2 text-center"}>
