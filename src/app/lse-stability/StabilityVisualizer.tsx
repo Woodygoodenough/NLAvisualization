@@ -89,7 +89,7 @@ export default function StabilityVisualizer() {
                   onChange={(e) => setPhiDeg(parseInt(e.target.value))}
                   className="w-full accent-slate-800"
                 />
-                <p className="text-xs text-slate-500 leading-snug">In-plane rotation of the projection.</p>
+                <p className="text-xs text-slate-500 leading-snug">Direction of the perturbation <span className="font-mono">δb</span> within Span(A).</p>
               </div>
             </div>
           </section>

@@ -43,18 +43,16 @@ export default function Scene3D({ thetaRad, phiRad }: Scene3DProps) {
   const yLength = Math.cos(thetaRad);
   const projDist = Math.sin(thetaRad); // distance from tip of b to tip of y
 
-  // The plane defined by A is the XZ plane for simplicity (y=0 in 3D coords, or z=0 if we use standard XY plane)
-  // Let's use the XZ plane as the subspace of A so the projection is straight down/up relative to Y axis.
+  // The plane defined by A is the XZ plane for simplicity (y=0 in 3D coords).
 
-  // y vector (in the XZ plane)
-  const yX = yLength * Math.cos(phiRad);
-  const yZ = yLength * Math.sin(phiRad);
+  // Keep b and y fixed in orientation (e.g., along the X-axis) so the scene doesn't spin.
+  const yX = yLength;
+  const yZ = 0;
   const y = useMemo(() => new THREE.Vector3(yX, 0, yZ), [yX, yZ]);
 
   // b vector
   // Starts at origin. Projection onto XZ plane is y.
   // The orthogonal component is along the Y axis.
-  // Length of orthogonal component = projDist = sin(theta)
   const b = useMemo(() => new THREE.Vector3(yX, projDist, yZ), [yX, projDist, yZ]);
 
   const bDir = b.clone().normalize();
@@ -63,9 +61,14 @@ export default function Scene3D({ thetaRad, phiRad }: Scene3DProps) {
   // Delta vectors for perturbations
   const deltaFactor = 0.15; // length of delta_b
 
-  // We want delta_b to be parallel to y (the projection) to maximize the perturbation mapping.
-  // Because it is parallel to the plane Span(A), its projection delta_y is identical to delta_b.
-  const deltaB = yDir.clone().multiplyScalar(deltaFactor);
+  // delta_b is parallel to the plane Span(A) to maximize the condition number ratio.
+  // We use phiRad to rotate delta_b entirely within the XZ plane.
+  // Since it rests entirely in Span(A), its projection delta_y is always perfectly equal to delta_b.
+  const deltaB = new THREE.Vector3(
+    Math.cos(phiRad) * deltaFactor,
+    0,
+    Math.sin(phiRad) * deltaFactor
+  );
 
   const b_perturbed = b.clone().add(deltaB);
   // delta_y is the projection of delta_b onto the XZ plane, which is exactly delta_b since delta_b is in the XZ plane.
