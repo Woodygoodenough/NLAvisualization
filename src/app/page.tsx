@@ -12,9 +12,9 @@ export default function Dashboard() {
     },
     {
       title: "LSE Stability II",
-      description: "Further exploration into the stability of linear least squares problems. (Coming soon)",
-      href: "#",
-      implemented: false,
+      description: "Understand the sensitivity of the projection ŷ to perturbations in the matrix A.",
+      href: "/lse-stability-2",
+      implemented: true,
     },
     {
       title: "LSE Stability III",
