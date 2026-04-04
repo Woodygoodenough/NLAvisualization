@@ -8,11 +8,11 @@ import { cn } from "@/lib/utils";
 
 const navItems = [
   { name: "Dashboard", href: "/", icon: Home },
-  { name: "LSE Stability I", href: "/lse-stability", icon: ActivitySquare },
-  { name: "Pointwise Conditioning", href: "/pointwise-conditioning", icon: ActivitySquare },
-  { name: "LSE Sensitivity I (coming soon)", href: "#", icon: ActivitySquare, disabled: true },
-  { name: "LSE Sensitivity II (coming soon)", href: "#", icon: ActivitySquare, disabled: true },
-  { name: "Condition Number of A (coming soon)", href: "#", icon: Compass, disabled: true },
+  { name: "Conditioning of Matrix I", href: "/pointwise-conditioning", icon: ActivitySquare },
+  { name: "Conditioning of Matrix II", href: "/conditioning-matrix-2", icon: ActivitySquare },
+  { name: "Conditioning of LSE I", href: "/lse-stability", icon: ActivitySquare },
+  { name: "Conditioning of LSE II (coming soon)", href: "#", icon: ActivitySquare, disabled: true },
+  { name: "Other NLA Topics (coming soon)", href: "#", icon: Compass, disabled: true },
 ];
 
 export function Sidebar() {

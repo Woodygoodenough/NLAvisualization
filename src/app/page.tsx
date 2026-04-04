@@ -5,31 +5,31 @@ import { ArrowRight, Lock } from "lucide-react";
 export default function Dashboard() {
   const pages = [
     {
-      title: "LSE Stability I",
-      description: "Understand the geometry of the normal equations projection and how b is projected onto the plane defined by A.",
-      href: "/lse-stability",
-      implemented: true,
-    },
-    {
-      title: "Pointwise Conditioning",
+      title: "Conditioning of Matrix I",
       description: "Understand how the pointwise condition number of A varies based on the input vector x.",
       href: "/pointwise-conditioning",
       implemented: true,
     },
     {
-      title: "LSE Sensitivity I",
-      description: "Conditioning and sensitivity analysis of matrix factorizations. (Coming soon)",
-      href: "#",
-      implemented: false,
+      title: "Conditioning of Matrix II",
+      description: "Visualize matrix perturbation geometry and deduced worst-case amplification.",
+      href: "/conditioning-matrix-2",
+      implemented: true,
     },
     {
-      title: "LSE Sensitivity II",
+      title: "Conditioning of LSE I",
+      description: "Understand the geometry of the normal equations projection and how b is projected onto the plane defined by A.",
+      href: "/lse-stability",
+      implemented: true,
+    },
+    {
+      title: "Conditioning of LSE II",
       description: "Advanced perturbations in numerical linear algebra. (Coming soon)",
       href: "#",
       implemented: false,
     },
     {
-      title: "Condition Number of A",
+      title: "Other NLA Topics",
       description: "Eigenvalue sensitivities, SVD, and Krylov subspace methods. (Coming soon)",
       href: "#",
       implemented: false,
