@@ -3,6 +3,8 @@
 import React, { useState } from "react";
 import "katex/dist/katex.min.css";
 import { BlockMath } from "react-katex";
+
+import { Slider } from "@/components/ui/slider";
 import Scene3D from "./Scene3D";
 
 export default function StabilityVisualizer() {
