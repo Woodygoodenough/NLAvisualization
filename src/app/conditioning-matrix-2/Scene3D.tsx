@@ -7,9 +7,7 @@ import * as THREE from "three";
 
 interface Scene3DProps {
   phiRad: number;
-  psiRad: number;
   epsilon: number;
-  deltaMinorRatio: number;
 }
 
 const VectorArrow = ({ start, end, color, label, showLabel = true, labelOffset = 0.05, dash = false, lineWidth = 1.5 }: { start: THREE.Vector3, end: THREE.Vector3, color: string, label: string, showLabel?: boolean, labelOffset?: number, dash?: boolean, lineWidth?: number }) => {
@@ -42,9 +40,13 @@ const VectorArrow = ({ start, end, color, label, showLabel = true, labelOffset =
   );
 };
 
-export default function Scene3D({ phiRad, psiRad, epsilon, deltaMinorRatio }: Scene3DProps) {
+export default function Scene3D({ phiRad, epsilon }: Scene3DProps) {
   const sigma1 = 2.0;
   const sigma2 = 0.5;
+
+  // Fixed parameters for the worst-case representative ellipse
+  const psiRad = Math.PI / 6; // 30 degrees tilt
+  const deltaMinorRatio = 0.4; // Fixed 0.4 ratio to look like an ellipse
 
   const u1 = useMemo(() => new THREE.Vector3(1, 0, 0), []);
   const u2 = useMemo(() => new THREE.Vector3(0, 0, 1), []);
