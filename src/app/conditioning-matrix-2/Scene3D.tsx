@@ -45,7 +45,6 @@ export default function Scene3D({ phiRad, epsilon }: Scene3DProps) {
   const sigma2 = 0.5;
 
   // Fixed parameters for the worst-case representative ellipse
-  const psiRad = Math.PI / 6; // 30 degrees tilt
   const deltaMinorRatio = 0.4; // Fixed 0.4 ratio to look like an ellipse
 
   const u1 = useMemo(() => new THREE.Vector3(1, 0, 0), []);
@@ -63,19 +62,22 @@ export default function Scene3D({ phiRad, epsilon }: Scene3DProps) {
   }, [x1, x2, u1, u2]);
 
   // Local delta A ellipse
-  // Major axis has length epsilon, oriented at psiRad.
-  // Minor axis has length epsilon * deltaMinorRatio, orthogonal to major axis.
-  const deltaAMajorDir = useMemo(() => new THREE.Vector3(Math.cos(psiRad), 0, Math.sin(psiRad)), [psiRad]);
-  const deltaAMinorDir = useMemo(() => new THREE.Vector3(-Math.sin(psiRad), 0, Math.cos(psiRad)), [psiRad]);
+  // We tilt it out of the X-Z plane (Span(A)) to be truly general.
+  const { vMaj, vMin } = useMemo(() => {
+    const euler = new THREE.Euler(Math.PI / 4, Math.PI / 6, Math.PI / 12, 'XYZ');
+    const maj = new THREE.Vector3(1, 0, 0).applyEuler(euler).normalize().multiplyScalar(epsilon);
+    const min = new THREE.Vector3(0, 0, 1).applyEuler(euler).normalize().multiplyScalar(epsilon * deltaMinorRatio);
+    return { vMaj: maj, vMin: min };
+  }, [epsilon, deltaMinorRatio]);
 
   // delta A x
-  // When x (input) projects onto the local delta A mapping, if we consider delta A as mapping the domain circle to this local ellipse:
-  // We'll visualize deltaAx simply as the major axis vector for geometric clarity of the upper bound.
-  const deltaAx = useMemo(() => deltaAMajorDir.clone().multiplyScalar(epsilon), [deltaAMajorDir, epsilon]);
+  // By design, our "worst-case" delta A aligns x with its right singular vector,
+  // so delta A x is exactly the major axis vMaj.
+  const deltaAx = vMaj;
 
   const perturbedAx = useMemo(() => ax.clone().add(deltaAx), [ax, deltaAx]);
 
-  // Create the nominal ellipse points
+  // Create the nominal ellipse points A(theta)
   const ellipsePoints = useMemo(() => {
     const points = [];
     const segments = 64;
@@ -89,18 +91,40 @@ export default function Scene3D({ phiRad, epsilon }: Scene3DProps) {
   }, [u1, u2]);
 
   // Create the local delta A ellipse centered at the origin, which we will offset to the tip of Ax.
+  // delta A maps z(theta) = cos(theta - phi) vMaj + sin(theta - phi) vMin
   const deltaAEllipsePoints = useMemo(() => {
     const points = [];
     const segments = 64;
-    const minorEpsilon = epsilon * deltaMinorRatio;
     for (let i = 0; i <= segments; i++) {
+      // theta parameterizes the local ellipse from 0 to 2pi
       const theta = (i / segments) * Math.PI * 2;
-      const t1 = deltaAMajorDir.clone().multiplyScalar(epsilon * Math.cos(theta));
-      const t2 = deltaAMinorDir.clone().multiplyScalar(minorEpsilon * Math.sin(theta));
+      const t1 = vMaj.clone().multiplyScalar(Math.cos(theta));
+      const t2 = vMin.clone().multiplyScalar(Math.sin(theta));
       points.push(t1.add(t2));
     }
     return points;
-  }, [deltaAMajorDir, deltaAMinorDir, epsilon, deltaMinorRatio]);
+  }, [vMaj, vMin]);
+
+  // Create the perturbed ellipse (A + delta A) centered at the origin.
+  // For any angle alpha in the domain, the perturbed mapping is A(alpha) + deltaA(alpha).
+  // A(alpha) = sigma1 cos(alpha) u1 + sigma2 sin(alpha) u2
+  // deltaA(alpha) = cos(alpha - phi) vMaj + sin(alpha - phi) vMin
+  const perturbedEllipsePoints = useMemo(() => {
+    const points = [];
+    const segments = 128;
+    for (let i = 0; i <= segments; i++) {
+      const alpha = (i / segments) * Math.PI * 2;
+
+      const aTerm = u1.clone().multiplyScalar(sigma1 * Math.cos(alpha))
+                      .add(u2.clone().multiplyScalar(sigma2 * Math.sin(alpha)));
+
+      const deltaTerm = vMaj.clone().multiplyScalar(Math.cos(alpha - phiRad))
+                          .add(vMin.clone().multiplyScalar(Math.sin(alpha - phiRad)));
+
+      points.push(aTerm.add(deltaTerm));
+    }
+    return points;
+  }, [sigma1, sigma2, u1, u2, vMaj, vMin, phiRad]);
 
 
   return (
@@ -139,9 +163,12 @@ export default function Scene3D({ phiRad, epsilon }: Scene3DProps) {
         {/* Nominal Ellipse */}
         <Line points={ellipsePoints} color="#94a3b8" lineWidth={2} />
 
+        {/* Perturbed Ellipse (A + delta A) */}
+        <Line points={perturbedEllipsePoints} color="#facc15" lineWidth={2} dashed dashScale={5} dashSize={0.1} />
+
         {/* Local delta A Ellipse centered at tip of Ax */}
         <group position={ax}>
-          <Line points={deltaAEllipsePoints} color="#ef4444" lineWidth={1.5} dashed dashScale={10} dashSize={0.05} />
+          <Line points={deltaAEllipsePoints} color="#ef4444" lineWidth={1.5} />
         </group>
 
         {/* Vector Ax */}
@@ -149,9 +176,6 @@ export default function Scene3D({ phiRad, epsilon }: Scene3DProps) {
 
         {/* Perturbation delta A x (Major axis of local ellipse) */}
         <VectorArrow start={ax} end={perturbedAx} color="#ef4444" label="δAx" labelOffset={0.15} />
-
-        {/* Perturbed (A + delta A)x from origin */}
-        <VectorArrow start={new THREE.Vector3(0,0,0)} end={perturbedAx} color="#f59e0b" label="(A+δA)x" dash={true} lineWidth={1} labelOffset={-0.1} />
 
       </group>
     </Canvas>

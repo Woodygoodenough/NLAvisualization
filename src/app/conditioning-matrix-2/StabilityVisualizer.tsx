@@ -57,9 +57,9 @@ export default function StabilityVisualizer() {
               We fix <InlineMath math="\mathbf{x}" /> and explore perturbations to the matrix itself: <InlineMath math="A \to A + \delta A" />.
             </p>
             <ul className="text-sm text-slate-600 space-y-1.5 list-disc pl-4 marker:text-slate-400">
-              <li>We visualize a "worst-case" <InlineMath math="\delta A" /> as a tilted ellipse centered at the tip of <InlineMath math="A\mathbf{x}" />.</li>
-              <li>There are infinitely many such worst-case perturbations. By choosing <InlineMath math="\delta A" /> such that <InlineMath math="\mathbf{x}" /> perfectly aligns with its right singular vector, the perturbation <InlineMath math="\delta A\mathbf{x}" /> maximizes its magnitude.</li>
-              <li>We render <InlineMath math="\delta A\mathbf{x}" /> directly along the long axis of this local ellipse to represent this upper bound.</li>
+              <li>We visualize a "worst-case" <InlineMath math="\delta A" /> as a solid red ellipse tilted out of <InlineMath math="\text{Span}(A)" />, centered at the tip of <InlineMath math="A\mathbf{x}" />.</li>
+              <li>By implicitly choosing <InlineMath math="\delta A" /> such that <InlineMath math="\mathbf{x}" /> aligns perfectly with its right singular vector, the perturbation <InlineMath math="\delta A\mathbf{x}" /> assumes its maximum possible magnitude and maps along the long axis of the local ellipse.</li>
+              <li>The dotted yellow ellipse shows the fully perturbed global mapping <InlineMath math="(A + \delta A)" /> applied to the entire domain circle.</li>
             </ul>
           </section>
 
