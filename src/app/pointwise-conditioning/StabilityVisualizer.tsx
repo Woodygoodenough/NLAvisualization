@@ -42,9 +42,7 @@ export default function StabilityVisualizer() {
           <section className="bg-slate-50 rounded-lg p-4 border border-slate-100">
             <h2 className="text-sm font-semibold text-slate-700 uppercase tracking-wider mb-3">Formulation</h2>
             <div className="text-sm overflow-x-auto">
-              <BlockMath math="\kappa(x) = \frac{||A|| \cdot ||x||}{||Ax||}" />
-              <BlockMath math="||A|| = \sigma_1 = 2" />
-              <BlockMath math="||x|| = 1" />
+              <BlockMath math="\kappa(\mathbf{x})_{\mathbf{x} \mapsto A\mathbf{x}} = \frac{||A|| \cdot ||\mathbf{x}||}{||A\mathbf{x}||}" />
             </div>
           </section>
 
