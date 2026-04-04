@@ -42,24 +42,12 @@ const VectorArrow = ({ start, end, color, label, showLabel = true, labelOffset =
 
 export default function Scene3D({ phiRad }: Scene3DProps) {
   const sigma1 = 2.0;
-  const sigma2 = 1.0;
+  const sigma2 = 0.5;
 
-  // Let span(A) be a tilted plane in 3D so it's clearly visible.
-  // Basis for span(A): u1, u2.
-  // We'll align u1 with X axis, and u2 tilted in the YZ plane.
-  const tiltAngle = Math.PI / 6; // 30 degrees tilt
+  // Span(A) is simply the XZ plane.
+  // Basis for span(A): u1 along X, u2 along Z.
   const u1 = useMemo(() => new THREE.Vector3(1, 0, 0), []);
-  const u2 = useMemo(() => new THREE.Vector3(0, Math.cos(tiltAngle), Math.sin(tiltAngle)), [tiltAngle]);
-
-  // Normal to the plane
-  const n = useMemo(() => new THREE.Vector3().crossVectors(u1, u2).normalize(), [u1, u2]);
-
-  // Plane rotation quaternion
-  const planeQuat = useMemo(() => {
-    const q = new THREE.Quaternion();
-    q.setFromUnitVectors(new THREE.Vector3(0, 1, 0), n);
-    return q;
-  }, [n]);
+  const u2 = useMemo(() => new THREE.Vector3(0, 0, 1), []);
 
   // x in domain
   const x1 = Math.cos(phiRad);
@@ -76,6 +64,11 @@ export default function Scene3D({ phiRad }: Scene3DProps) {
   // We attach it to the tip of Ax.
   const aDeltaXLength = 0.5; // Fixed visual length
   const aDeltaX = useMemo(() => ax.clone().add(u1.clone().multiplyScalar(aDeltaXLength)), [ax, u1]);
+
+  // Determine if this is the worst-case input (when phi is 90 or 270 degrees)
+  const phiDeg = Math.round(phiRad * 180 / Math.PI) % 360;
+  const isWorstInput = phiDeg === 90 || phiDeg === 270;
+  const axLabel = isWorstInput ? "worst-case Ax" : "Ax";
 
   // Create the ellipse points
   const ellipsePoints = useMemo(() => {
@@ -100,7 +93,7 @@ export default function Scene3D({ phiRad }: Scene3DProps) {
 
       <OrbitControls makeDefault minPolarAngle={0} maxPolarAngle={Math.PI / 2 + 0.2} />
 
-      {/* Grid */}
+      {/* Grid serving as Span(A) */}
       <group>
         <Grid
           infiniteGrid
@@ -111,18 +104,10 @@ export default function Scene3D({ phiRad }: Scene3DProps) {
           sectionSize={1}
         />
 
-        {/* Plane Span(A) */}
-        <Plane args={[10, 10]} rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} quaternion={planeQuat}>
-          <meshBasicMaterial color="#e0f2fe" transparent opacity={0.3} side={THREE.DoubleSide} depthWrite={false} />
-        </Plane>
-
-        <Html position={[u1.x * 2.5 + u2.x * 2.5, u1.y * 2.5 + u2.y * 2.5, u1.z * 2.5 + u2.z * 2.5]} style={{ pointerEvents: 'none' }}>
+        <Html position={[u1.x * 2.5 + u2.x * 2.5, 0, u1.z * 2.5 + u2.z * 2.5]} style={{ pointerEvents: 'none' }}>
           <div className="text-xs font-mono text-sky-600 bg-white/50 px-1 rounded backdrop-blur whitespace-nowrap opacity-60">Span(A)</div>
         </Html>
       </group>
-
-      {/* 3D Coordinate Frame at Origin */}
-      <axesHelper args={[1]} />
 
       {/* Core Geometry */}
       <group>
@@ -134,16 +119,12 @@ export default function Scene3D({ phiRad }: Scene3DProps) {
         {/* Ellipse */}
         <Line points={ellipsePoints} color="#94a3b8" lineWidth={2} />
 
-        {/* Principal Axes (optional guides) */}
-        <VectorArrow start={new THREE.Vector3(0,0,0)} end={u1.clone().multiplyScalar(sigma1)} color="#cbd5e1" label="σ1" dash={true} showLabel={true} />
-        <VectorArrow start={new THREE.Vector3(0,0,0)} end={u2.clone().multiplyScalar(sigma2)} color="#cbd5e1" label="σ2" dash={true} showLabel={true} />
-
-        {/* Negative directions just for the lines */}
-        <Line points={[new THREE.Vector3(0,0,0), u1.clone().multiplyScalar(-sigma1)]} color="#cbd5e1" lineWidth={1} dashed dashScale={5} dashSize={0.05} />
-        <Line points={[new THREE.Vector3(0,0,0), u2.clone().multiplyScalar(-sigma2)]} color="#cbd5e1" lineWidth={1} dashed dashScale={5} dashSize={0.05} />
+        {/* Principal Axes as simple half-axes */}
+        <VectorArrow start={new THREE.Vector3(0,0,0)} end={u1.clone().multiplyScalar(sigma1)} color="#94a3b8" label="σ1" dash={true} showLabel={true} lineWidth={2} labelOffset={0.15} />
+        <VectorArrow start={new THREE.Vector3(0,0,0)} end={u2.clone().multiplyScalar(sigma2)} color="#94a3b8" label="σ2" dash={true} showLabel={true} lineWidth={2} labelOffset={-0.15} />
 
         {/* Vector Ax */}
-        <VectorArrow start={new THREE.Vector3(0,0,0)} end={ax} color="#10b981" label="Ax" labelOffset={0.1} />
+        <VectorArrow start={new THREE.Vector3(0,0,0)} end={ax} color="#10b981" label={axLabel} labelOffset={0.1} />
 
         {/* Worst-case perturbation A(delta x) */}
         <VectorArrow start={ax} end={aDeltaX} color="#ef4444" label="worst-case Aδx" labelOffset={0.1} />

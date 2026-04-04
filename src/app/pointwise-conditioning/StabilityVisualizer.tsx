@@ -14,17 +14,19 @@ export default function StabilityVisualizer() {
   const x1 = Math.cos(phiRad);
   const x2 = Math.sin(phiRad);
 
-  // A has singular values sigma_1 = 2, sigma_2 = 1.
+  // A has singular values sigma_1 = 2, sigma_2 = 0.5.
   // Assuming A = U \Sigma V^T, let v_1 = e_1, v_2 = e_2 in R^2.
-  // Then A x = 2 x_1 u_1 + 1 x_2 u_2.
-  // The length of Ax is sqrt((2 x_1)^2 + (1 x_2)^2).
+  // Then A x = 2 x_1 u_1 + 0.5 x_2 u_2.
+  // The length of Ax is sqrt((2 x_1)^2 + (0.5 x_2)^2).
   const ax1 = 2 * x1;
-  const ax2 = 1 * x2;
+  const ax2 = 0.5 * x2;
   const axLength = Math.sqrt(ax1*ax1 + ax2*ax2);
 
   const sigma1 = 2.0;
   // kappa(x) = ||A|| ||x|| / ||Ax|| = sigma_1 * 1 / ||Ax|| = 2 / ||Ax||
   const kappaX = sigma1 / axLength;
+
+  const isWorstInput = phiDeg === 90 || phiDeg === 270;
 
   return (
     <div className="flex h-full flex-col xl:flex-row overflow-hidden">
@@ -82,6 +84,15 @@ export default function StabilityVisualizer() {
                 />
                 <p className="text-xs text-slate-500 leading-snug">Position of <span className="font-mono">x</span> on the unit circle in the domain.</p>
               </div>
+
+              <div className="pt-2">
+                <button
+                  onClick={() => setPhiDeg(90)}
+                  className="w-full py-2 px-4 bg-red-50 hover:bg-red-100 text-red-700 text-sm font-medium rounded-md border border-red-200 transition-colors flex items-center justify-center gap-2 shadow-sm"
+                >
+                  Set to Worst-Case Input
+                </button>
+              </div>
             </div>
           </section>
         </div>
@@ -102,10 +113,12 @@ export default function StabilityVisualizer() {
             <circle cx="0" cy="0" r="1" fill="none" stroke="#94a3b8" strokeWidth="0.02" strokeDasharray="0.05 0.05" />
             {/* Vector x */}
             {/* Note: SVG y-axis is down, so we negate y coordinate to match standard math coords visually */}
-            <line x1="0" y1="0" x2={x1} y2={-x2} stroke="#3b82f6" strokeWidth="0.04" />
-            <circle cx={x1} cy={-x2} r="0.06" fill="#3b82f6" />
+            <line x1="0" y1="0" x2={x1} y2={-x2} stroke={isWorstInput ? "#ef4444" : "#3b82f6"} strokeWidth="0.04" />
+            <circle cx={x1} cy={-x2} r="0.06" fill={isWorstInput ? "#ef4444" : "#3b82f6"} />
             {/* Label */}
-            <text x={x1 * 1.2} y={-x2 * 1.2} fontSize="0.2" fill="#3b82f6" textAnchor="middle" dominantBaseline="middle" className="font-mono font-bold">x</text>
+            <text x={x1 * 1.2} y={-x2 * 1.2} fontSize={isWorstInput ? "0.15" : "0.2"} fill={isWorstInput ? "#ef4444" : "#3b82f6"} textAnchor="middle" dominantBaseline="middle" className="font-mono font-bold">
+              {isWorstInput ? "worst-case x" : "x"}
+            </text>
           </svg>
           <div className="mt-2 text-center text-xs font-mono text-slate-500">
             x = ({x1.toFixed(2)}, {x2.toFixed(2)})
