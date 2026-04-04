@@ -42,7 +42,7 @@ const VectorArrow = ({ start, end, color, label, showLabel = true, labelOffset =
 
 export default function Scene3D({ phiRad }: Scene3DProps) {
   const sigma1 = 2.0;
-  const sigma2 = 1.0;
+  const sigma2 = 0.5;
 
   // Span(A) is simply the XZ plane.
   // Basis for span(A): u1 along X, u2 along Z.
@@ -64,6 +64,11 @@ export default function Scene3D({ phiRad }: Scene3DProps) {
   // We attach it to the tip of Ax.
   const aDeltaXLength = 0.5; // Fixed visual length
   const aDeltaX = useMemo(() => ax.clone().add(u1.clone().multiplyScalar(aDeltaXLength)), [ax, u1]);
+
+  // Determine if this is the worst-case input (when phi is 90 or 270 degrees)
+  const phiDeg = Math.round(phiRad * 180 / Math.PI) % 360;
+  const isWorstInput = phiDeg === 90 || phiDeg === 270;
+  const axLabel = isWorstInput ? "worst-case Ax" : "Ax";
 
   // Create the ellipse points
   const ellipsePoints = useMemo(() => {
@@ -115,11 +120,11 @@ export default function Scene3D({ phiRad }: Scene3DProps) {
         <Line points={ellipsePoints} color="#94a3b8" lineWidth={2} />
 
         {/* Principal Axes as simple half-axes */}
-        <VectorArrow start={new THREE.Vector3(0,0,0)} end={u1.clone().multiplyScalar(sigma1)} color="#94a3b8" label="σ1" dash={true} showLabel={true} lineWidth={2} />
-        <VectorArrow start={new THREE.Vector3(0,0,0)} end={u2.clone().multiplyScalar(sigma2)} color="#94a3b8" label="σ2" dash={true} showLabel={true} lineWidth={2} />
+        <VectorArrow start={new THREE.Vector3(0,0,0)} end={u1.clone().multiplyScalar(sigma1)} color="#94a3b8" label="σ1" dash={true} showLabel={true} lineWidth={2} labelOffset={0.15} />
+        <VectorArrow start={new THREE.Vector3(0,0,0)} end={u2.clone().multiplyScalar(sigma2)} color="#94a3b8" label="σ2" dash={true} showLabel={true} lineWidth={2} labelOffset={-0.15} />
 
         {/* Vector Ax */}
-        <VectorArrow start={new THREE.Vector3(0,0,0)} end={ax} color="#10b981" label="Ax" labelOffset={0.1} />
+        <VectorArrow start={new THREE.Vector3(0,0,0)} end={ax} color="#10b981" label={axLabel} labelOffset={0.1} />
 
         {/* Worst-case perturbation A(delta x) */}
         <VectorArrow start={ax} end={aDeltaX} color="#ef4444" label="worst-case Aδx" labelOffset={0.1} />
