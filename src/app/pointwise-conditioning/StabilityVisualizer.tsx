@@ -33,7 +33,7 @@ export default function StabilityVisualizer() {
       {/* Sidebar Info Panel */}
       <div className="w-full xl:w-[400px] flex-shrink-0 border-b xl:border-b-0 xl:border-r bg-white p-6 overflow-y-auto z-10 shadow-[0_0_15px_rgba(0,0,0,0.05)]">
         <div className="mb-6">
-          <h1 className="text-2xl font-bold tracking-tight mb-1 text-slate-900">Pointwise Conditioning</h1>
+          <h1 className="text-2xl font-bold tracking-tight mb-1 text-slate-900">Conditioning of Matrix I</h1>
           <p className="text-sm text-slate-500">Geometry of the image ellipse</p>
         </div>
 
@@ -43,6 +43,7 @@ export default function StabilityVisualizer() {
             <h2 className="text-sm font-semibold text-slate-700 uppercase tracking-wider mb-3">Formulation</h2>
             <div className="text-sm overflow-x-auto">
               <BlockMath math="\kappa(\mathbf{x})_{\mathbf{x} \mapsto A\mathbf{x}} = \frac{||A|| \cdot ||\mathbf{x}||}{||A\mathbf{x}||}" />
+              <BlockMath math="\le \kappa(A) = ||A|| \cdot ||A^{-1}||" />
             </div>
           </section>
 
@@ -53,9 +54,9 @@ export default function StabilityVisualizer() {
               The unit circle in the domain <InlineMath math="\mathbb{R}^2" /> maps to an ellipse lying inside the plane <span className="font-mono text-xs font-semibold bg-slate-100 px-1 py-0.5 rounded">Span(A)</span> in <InlineMath math="\mathbb{R}^3" />.
             </p>
             <ul className="text-sm text-slate-600 space-y-1.5 list-disc pl-4 marker:text-slate-400">
-              <li>The worst-case perturbation <span className="font-mono text-xs">Aδx</span> always aligns with the long axis of the ellipse.</li>
-              <li>When <span className="font-mono text-xs">Ax</span> is near the short axis, <span className="font-mono text-xs">||Ax||</span> is small, so <span className="font-mono text-xs">κ(x)</span> is large.</li>
-              <li>Pointwise conditioning depends on both the input location <span className="font-mono text-xs">x</span> and the worst-case perturbation amplification.</li>
+              <li>The worst-case perturbation <InlineMath math="A\delta\mathbf{x}" /> always aligns with the long axis of the ellipse.</li>
+              <li>When <InlineMath math="A\mathbf{x}" /> is near the short axis, <InlineMath math="||A\mathbf{x}||" /> is small, so <InlineMath math="\kappa(\mathbf{x})" /> is large.</li>
+              <li>Pointwise conditioning depends on both the input location <InlineMath math="\mathbf{x}" /> and the worst-case perturbation amplification.</li>
             </ul>
           </section>
 
