@@ -1,35 +1,14 @@
 
-> temp_app@0.1.0 dev
-> next dev
+> temp_app@0.1.0 start
+> next start
 
-▲ Next.js 16.2.2 (Turbopack)
-- Local:         http://localhost:3000
-- Network:       http://192.168.0.2:3000
-✓ Ready in 573ms
-
-○ Compiling / ...
- GET / 200 in 5.0s (next.js: 4.4s, application-code: 640ms)
-○ Compiling /lse-stability ...
- GET /lse-stability 200 in 5.1s (next.js: 5.0s, application-code: 74ms)
-[browser] Encountered a script tag while rendering React component. Scripts inside React components are never executed when rendering on the client. Consider using template tag instead (https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template).
-[browser] THREE.THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
-[browser] THREE.LineSegmentsGeometry.computeBoundingSphere(): Computed radius is NaN. The instanced position data is likely to have NaN values. [object Object]
-[browser] THREE.LineSegmentsGeometry.computeBoundingSphere(): Computed radius is NaN. The instanced position data is likely to have NaN values. [object Object]
-[browser] THREE.LineSegmentsGeometry.computeBoundingSphere(): Computed radius is NaN. The instanced position data is likely to have NaN values. [object Object]
-[browser] THREE.LineSegmentsGeometry.computeBoundingSphere(): Computed radius is NaN. The instanced position data is likely to have NaN values. [object Object]
-[browser] THREE.LineSegmentsGeometry.computeBoundingSphere(): Computed radius is NaN. The instanced position data is likely to have NaN values. [object Object]
-[browser] THREE.LineSegmentsGeometry.computeBoundingSphere(): Computed radius is NaN. The instanced position data is likely to have NaN values. [object Object]
-[browser] THREE.LineSegmentsGeometry.computeBoundingSphere(): Computed radius is NaN. The instanced position data is likely to have NaN values. [object Object]
-[browser] THREE.LineSegmentsGeometry.computeBoundingSphere(): Computed radius is NaN. The instanced position data is likely to have NaN values. [object Object]
- GET / 200 in 1355ms (next.js: 716ms, application-code: 639ms)
- GET /lse-stability 200 in 87ms (next.js: 50ms, application-code: 37ms)
-[browser] THREE.THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
- GET / 200 in 2.2s (next.js: 669ms, application-code: 1486ms)
- GET /lse-stability 200 in 204ms (next.js: 73ms, application-code: 130ms)
-[browser] THREE.THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
- GET / 200 in 719ms (next.js: 68ms, application-code: 651ms)
- GET /lse-stability 200 in 99ms (next.js: 32ms, application-code: 67ms)
-[browser] THREE.THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
- GET / 200 in 970ms (next.js: 94ms, application-code: 876ms)
- GET /lse-stability 200 in 81ms (next.js: 28ms, application-code: 52ms)
-[browser] THREE.THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+⨯ Failed to start server
+Error: listen EADDRINUSE: address already in use :::3000
+    at <unknown> (Error: listen EADDRINUSE: address already in use :::3000)
+    at new Promise (<anonymous>) {
+  code: 'EADDRINUSE',
+  errno: -98,
+  syscall: 'listen',
+  address: '::',
+  port: 3000
+}
