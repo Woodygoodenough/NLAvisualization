@@ -9,10 +9,10 @@ import { cn } from "@/lib/utils";
 const navItems = [
   { name: "Dashboard", href: "/", icon: Home },
   { name: "LSE Stability I", href: "/lse-stability", icon: ActivitySquare },
-  { name: "LSE Stability II", href: "/lse-stability-2", icon: ActivitySquare },
-  { name: "LSE Stability III (coming soon)", href: "#", icon: ActivitySquare, disabled: true },
-  { name: "LSE Stability IV (coming soon)", href: "#", icon: ActivitySquare, disabled: true },
-  { name: "More NLA Topics (coming soon)", href: "#", icon: Compass, disabled: true },
+  { name: "Pointwise Conditioning", href: "/pointwise-conditioning", icon: ActivitySquare },
+  { name: "LSE Sensitivity I (coming soon)", href: "#", icon: ActivitySquare, disabled: true },
+  { name: "LSE Sensitivity II (coming soon)", href: "#", icon: ActivitySquare, disabled: true },
+  { name: "Condition Number of A (coming soon)", href: "#", icon: Compass, disabled: true },
 ];
 
 export function Sidebar() {
