@@ -8,6 +8,7 @@ import Scene3D from "./Scene3D";
 export default function StabilityVisualizer() {
   const [phiDeg, setPhiDeg] = useState(45);
   const [psiDeg, setPsiDeg] = useState(45);
+  const [deltaMinorRatio, setDeltaMinorRatio] = useState(0.0);
 
   const phiRad = (phiDeg * Math.PI) / 180;
   const psiRad = (psiDeg * Math.PI) / 180;
@@ -59,9 +60,9 @@ export default function StabilityVisualizer() {
               We fix <InlineMath math="\mathbf{x}" /> and explore perturbations to the matrix itself: <InlineMath math="A \to A + \delta A" />.
             </p>
             <ul className="text-sm text-slate-600 space-y-1.5 list-disc pl-4 marker:text-slate-400">
-              <li>A worst-case perturbation <InlineMath math="\delta A" /> can be constructed as a rank-1 update: <InlineMath math="\delta A = \epsilon \mathbf{u} \mathbf{x}^T" />.</li>
-              <li>This causes the action of the matrix to shift by <InlineMath math="\delta A \mathbf{x} = \epsilon \mathbf{u}" />.</li>
-              <li>Visually, this tilts and resizes the entire image ellipse.</li>
+              <li>We can visualize <InlineMath math="\delta A" /> as its own small ellipse centered at the tip of <InlineMath math="A\mathbf{x}" />.</li>
+              <li>The equality condition holds when the major axis of <InlineMath math="\delta A" /> aligns with <InlineMath math="A\mathbf{x}" />.</li>
+              <li>A rank-1 perturbation is simply the case where the <InlineMath math="\delta A" /> ellipse collapses to one dimension.</li>
             </ul>
           </section>
 
@@ -105,7 +106,26 @@ export default function StabilityVisualizer() {
                   onChange={(e) => setPsiDeg(parseInt(e.target.value))}
                   className="w-full accent-slate-800"
                 />
-                <p className="text-xs text-slate-500 leading-snug">Direction of the worst-case perturbation vector <InlineMath math="\mathbf{u}" />.</p>
+                <p className="text-xs text-slate-500 leading-snug">Direction of the major axis for <InlineMath math="\delta A" />.</p>
+              </div>
+
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <label className="text-sm font-medium text-slate-700 flex items-center">
+                    Rank-1 Collapse
+                  </label>
+                  <span className="text-sm font-mono text-slate-500 bg-slate-100 px-2 py-0.5 rounded">{deltaMinorRatio.toFixed(2)}</span>
+                </div>
+                <input
+                  type="range"
+                  value={deltaMinorRatio * 100}
+                  min={0}
+                  max={100}
+                  step={1}
+                  onChange={(e) => setDeltaMinorRatio(parseInt(e.target.value) / 100)}
+                  className="w-full accent-slate-800"
+                />
+                <p className="text-xs text-slate-500 leading-snug">Minor axis ratio of <InlineMath math="\delta A" />. At <InlineMath math="0" />, it is a rank-1 perturbation.</p>
               </div>
 
               <div className="pt-2 flex gap-2">
@@ -117,8 +137,6 @@ export default function StabilityVisualizer() {
                 </button>
                 <button
                   onClick={() => {
-                    // Worst case perturbation direction u should be anti-parallel to Ax to maximize relative change
-                    // Ax angle:
                     const axAngle = Math.atan2(ax2, ax1);
                     const psiWorst = (axAngle + Math.PI) * 180 / Math.PI;
                     setPsiDeg(Math.round((psiWorst + 360) % 360));
@@ -135,7 +153,7 @@ export default function StabilityVisualizer() {
 
       {/* 3D Visualization Area */}
       <div className="flex-1 relative bg-slate-50 h-[500px] xl:h-auto min-h-0">
-        <Scene3D phiRad={phiRad} psiRad={psiRad} epsilon={epsilon} />
+        <Scene3D phiRad={phiRad} psiRad={psiRad} epsilon={epsilon} deltaMinorRatio={deltaMinorRatio} />
 
         {/* Overlay Metrics */}
         <div className="absolute top-6 right-6 flex flex-col gap-3 pointer-events-none">
