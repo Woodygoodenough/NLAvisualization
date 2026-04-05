@@ -17,7 +17,7 @@ const navItems = [
     icon: Layers,
     children: [
       { name: "Classical Gram-Schmidt", href: "/four-qrs/cgs" },
-      { name: "Modified Gram-Schmidt", href: "/four-qrs/mgs", disabled: true },
+      { name: "Modified Gram-Schmidt", href: "/four-qrs/mgs" },
       { name: "Householder", href: "/four-qrs/householder", disabled: true },
       { name: "Givens", href: "/four-qrs/givens", disabled: true },
     ]
