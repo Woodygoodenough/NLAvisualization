@@ -30,17 +30,17 @@ const VectorArrow = ({ start, end, color, label, showLabel = true, labelOffset =
         <group>
           {/* We use a custom mesh for arrows to support opacity reliably */}
           <mesh position={start.clone().add(dir.clone().multiplyScalar(length / 2))} quaternion={new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir)}>
-            <cylinderGeometry args={[lineWidth * 0.01, lineWidth * 0.01, length - Math.min(length * 0.2, 0.15), 8]} />
+            <cylinderGeometry args={[lineWidth * 0.005, lineWidth * 0.005, length - Math.min(length * 0.2, 0.15), 8]} />
             <meshBasicMaterial color={color} transparent={opacity < 1} opacity={opacity} />
           </mesh>
           <mesh position={end.clone().sub(dir.clone().multiplyScalar(Math.min(length * 0.2, 0.15) / 2))} quaternion={new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir)}>
-            <coneGeometry args={[lineWidth * 0.03, Math.min(length * 0.2, 0.15), 8]} />
+            <coneGeometry args={[lineWidth * 0.015, Math.min(length * 0.2, 0.15), 8]} />
             <meshBasicMaterial color={color} transparent={opacity < 1} opacity={opacity} />
           </mesh>
         </group>
       )}
       {dash && (
-        <Line points={[start, end]} color={color} lineWidth={lineWidth} dashed dashScale={5} dashSize={0.1} gapSize={0.05} transparent={opacity < 1} opacity={opacity} />
+        <Line points={[start, end]} color={color} lineWidth={lineWidth * 0.5} dashed dashScale={5} dashSize={0.1} gapSize={0.05} transparent={opacity < 1} opacity={opacity} />
       )}
       {showLabel && opacity > 0.1 && (
         <Html position={midPoint} center style={{ pointerEvents: 'none' }}>
@@ -64,9 +64,9 @@ export default function Scene3D({ step }: Scene3DProps) {
   // Define fixed, non-degenerate, non-orthogonal 3x3 matrix A = [a1, a2, a3]
   const { a1, a2, a3 } = useMemo(() => {
     return {
-      a1: new THREE.Vector3(1, 0.5, 0.2),
-      a2: new THREE.Vector3(0.5, 1.2, 0.3),
-      a3: new THREE.Vector3(0.2, 0.4, 1.5)
+      a1: new THREE.Vector3(2.0, 1.0, 0.4),
+      a2: new THREE.Vector3(1.0, 2.4, 0.6),
+      a3: new THREE.Vector3(0.4, 0.8, 3.0)
     };
   }, []);
 
@@ -139,13 +139,13 @@ export default function Scene3D({ step }: Scene3DProps) {
         </mesh>
 
         {/* Original vectors A */}
-        <VectorArrow start={origin} end={a1} color={aColor} label="a₁" opacity={aOpacity} />
-        <VectorArrow start={origin} end={a2} color={aColor} label="a₂" opacity={aOpacity} />
-        <VectorArrow start={origin} end={a3} color={aColor} label="a₃" opacity={aOpacity} />
+        <VectorArrow start={origin} end={a1} color={aColor} label="a₁" opacity={aOpacity} lineWidth={1} />
+        <VectorArrow start={origin} end={a2} color={aColor} label="a₂" opacity={aOpacity} lineWidth={1} />
+        <VectorArrow start={origin} end={a3} color={aColor} label="a₃" opacity={aOpacity} lineWidth={1} />
 
         {/* Step 1: q1 */}
         {step >= 1 && (
-          <VectorArrow start={origin} end={q1} color={q1Color} label="q₁" lineWidth={3} />
+          <VectorArrow start={origin} end={q1} color={q1Color} label="q₁" lineWidth={2} />
         )}
 
         {/* Step 2: projection of a2 onto q1 */}
@@ -165,7 +165,7 @@ export default function Scene3D({ step }: Scene3DProps) {
             {step === 3 && (
                <VectorArrow start={p21} end={a2} color={uColor} label="u₂ = a₂ - proj" dash lineWidth={2} labelOffset={0.15} />
             )}
-            <VectorArrow start={origin} end={q2} color={q2Color} label="q₂" lineWidth={3} />
+            <VectorArrow start={origin} end={q2} color={q2Color} label="q₂" lineWidth={2} />
           </group>
         )}
 
@@ -192,7 +192,7 @@ export default function Scene3D({ step }: Scene3DProps) {
              {step === 5 && (
                <VectorArrow start={p31.clone().add(p32)} end={a3} color={uColor} label="u₃" dash lineWidth={2} labelOffset={0.15} />
              )}
-            <VectorArrow start={origin} end={q3} color={q3Color} label="q₃" lineWidth={3} />
+            <VectorArrow start={origin} end={q3} color={q3Color} label="q₃" lineWidth={2} />
           </group>
         )}
 

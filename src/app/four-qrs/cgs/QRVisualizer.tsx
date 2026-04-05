@@ -9,21 +9,25 @@ export default function CGSVisualizer() {
   const maxStep = 5;
 
   // Render the R matrix live based on the current step
-  // Step 0: all 0
-  // Step 1: r11
-  // Step 2: r12
-  // Step 3: r22
-  // Step 4: r13, r23
-  // Step 5: r33
+  // We use \hphantom so that "0" takes up the same width as "r_{ij}" to prevent layout shifts.
   const renderRMatrix = () => {
-    const r11 = step >= 1 ? "r_{11}" : "0";
-    const r12 = step >= 2 ? "r_{12}" : "0";
-    const r13 = step >= 4 ? "r_{13}" : "0";
-    const r22 = step >= 3 ? "r_{22}" : "0";
-    const r23 = step >= 4 ? "r_{23}" : "0";
-    const r33 = step >= 5 ? "r_{33}" : "0";
+    const formatEntry = (show: boolean, val: string) => {
+      return show ? val : `\\hphantom{${val}}\\llap{0}`;
+    };
 
-    return `\\begin{bmatrix} ${r11} & ${r12} & ${r13} \\\\ 0 & ${r22} & ${r23} \\\\ 0 & 0 & ${r33} \\end{bmatrix}`;
+    const r11 = formatEntry(step >= 1, "r_{11}");
+    const r12 = formatEntry(step >= 2, "r_{12}");
+    const r13 = formatEntry(step >= 4, "r_{13}");
+    const r22 = formatEntry(step >= 3, "r_{22}");
+    const r23 = formatEntry(step >= 4, "r_{23}");
+    const r33 = formatEntry(step >= 5, "r_{33}");
+
+    const zero21 = formatEntry(false, "r_{21}"); // Use phantom space for zeros as well for alignment
+    const zero31 = formatEntry(false, "r_{31}");
+    const zero32 = formatEntry(false, "r_{32}");
+
+    // Using an array environment allows spacing out columns evenly
+    return `\\begin{bmatrix} ${r11} & ${r12} & ${r13} \\\\[0.5em] ${zero21} & ${r22} & ${r23} \\\\[0.5em] ${zero31} & ${zero32} & ${r33} \\end{bmatrix}`;
   };
 
   const getStepDescription = (s: number) => {
@@ -46,12 +50,12 @@ export default function CGSVisualizer() {
       {/* Left Sidebar for Controls & Explanation */}
       <div className="w-1/3 min-w-[320px] max-w-[400px] border-r bg-white p-6 overflow-y-auto flex flex-col shadow-sm z-10">
 
-        <div className="mb-6">
+        <div className="mb-4">
           <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Classical Gram-Schmidt</h1>
           <p className="text-sm text-slate-500 mt-1">Orthogonalizing a set of vectors</p>
         </div>
 
-        <div className="bg-slate-50/50 rounded-xl p-5 border border-slate-100 mb-6 space-y-4">
+        <div className="bg-slate-50/50 rounded-xl p-4 border border-slate-100 mb-4 space-y-4">
           <div>
             <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Algorithm</h3>
             <p className="text-sm text-slate-700 leading-relaxed">
@@ -60,10 +64,10 @@ export default function CGSVisualizer() {
           </div>
         </div>
 
-        <div className="bg-white rounded-xl p-5 border border-slate-200 mb-6 shadow-sm">
+        <div className="bg-white rounded-xl p-4 border border-slate-200 mb-4 shadow-sm">
           <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-4">Step-by-Step Construction</h3>
 
-          <div className="mb-6">
+          <div className="mb-4">
             <div className="flex justify-between items-center mb-2">
               <span className="text-sm font-medium text-slate-700">Step {step} of {maxStep}</span>
             </div>
@@ -92,9 +96,9 @@ export default function CGSVisualizer() {
           </div>
         </div>
 
-        <div className="bg-slate-50/50 rounded-xl p-5 border border-slate-100 mt-auto">
+        <div className="bg-slate-50/50 rounded-xl p-4 border border-slate-100 mt-auto flex-shrink-0">
           <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">R Matrix Construction</h3>
-          <div className="flex justify-center text-lg my-4 text-slate-800">
+          <div className="flex justify-center text-xl my-4 text-slate-800 w-full overflow-x-auto min-h-[100px] items-center py-2">
              <BlockMath math={`R = ${renderRMatrix()}`} />
           </div>
           <p className="text-xs text-slate-500 text-center">
