@@ -164,7 +164,15 @@ export default function Scene3D({ phiRad, epsilon }: Scene3DProps) {
         <Line points={ellipsePoints} color="#94a3b8" lineWidth={2} />
 
         {/* Perturbed Ellipse (A + delta A) */}
-        <Line points={perturbedEllipsePoints} color="#facc15" lineWidth={2} dashed dashScale={5} dashSize={0.1} />
+        <group>
+          <Line points={perturbedEllipsePoints} color="#facc15" lineWidth={2} dashed dashScale={10} dashSize={0.05} gapSize={0.05} />
+          {/* Annotation for perturbed ellipse */}
+          <Html position={perturbedEllipsePoints[0]} style={{ pointerEvents: 'none' }}>
+            <div className="font-mono text-[10px] font-bold px-1.5 py-0.5 rounded bg-white/80 backdrop-blur-sm border border-yellow-200 shadow-sm whitespace-nowrap text-yellow-600 translate-y-3">
+              (A+δA) mapped domain
+            </div>
+          </Html>
+        </group>
 
         {/* Local delta A Ellipse centered at tip of Ax */}
         <group position={ax}>

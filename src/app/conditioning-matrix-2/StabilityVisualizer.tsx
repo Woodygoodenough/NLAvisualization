@@ -3,7 +3,37 @@
 import React, { useState } from "react";
 import "katex/dist/katex.min.css";
 import { BlockMath, InlineMath } from "react-katex";
+import { Canvas } from "@react-three/fiber";
+import { Line, Html } from "@react-three/drei";
+import * as THREE from "three";
 import Scene3D from "./Scene3D";
+
+// Domain visualizer matching Matrix I
+const DomainView = ({ phiRad }: { phiRad: number }) => {
+  const circlePoints = React.useMemo(() => {
+    const points = [];
+    for (let i = 0; i <= 64; i++) {
+      const theta = (i / 64) * Math.PI * 2;
+      points.push(new THREE.Vector3(Math.cos(theta), Math.sin(theta), 0));
+    }
+    return points;
+  }, []);
+
+  const xVec = new THREE.Vector3(Math.cos(phiRad), Math.sin(phiRad), 0);
+
+  return (
+    <Canvas orthographic camera={{ position: [0, 0, 5], zoom: 40 }}>
+      <Line points={circlePoints} color="#cbd5e1" lineWidth={1.5} />
+      <arrowHelper args={[xVec, new THREE.Vector3(0, 0, 0), 1, "#334155", 0.2, 0.1]} />
+      <Html position={[xVec.x * 1.2, xVec.y * 1.2, 0]} center>
+        <span className="font-mono text-xs font-bold text-slate-700">x</span>
+      </Html>
+      <Html position={[0, -1.5, 0]} center>
+        <span className="text-[10px] uppercase tracking-wider text-slate-400 whitespace-nowrap font-semibold">Domain</span>
+      </Html>
+    </Canvas>
+  );
+};
 
 export default function StabilityVisualizer() {
   const [phiDeg, setPhiDeg] = useState(45);
@@ -103,6 +133,11 @@ export default function StabilityVisualizer() {
       {/* 3D Visualization Area */}
       <div className="flex-1 relative bg-slate-50 h-[500px] xl:h-auto min-h-0">
         <Scene3D phiRad={phiRad} epsilon={epsilon} />
+
+        {/* Inset Domain View */}
+        <div className="absolute bottom-6 left-6 w-32 h-32 bg-white/90 backdrop-blur border border-slate-200 shadow-sm rounded-lg overflow-hidden pointer-events-none">
+          <DomainView phiRad={phiRad} />
+        </div>
 
         {/* Overlay Metrics */}
         <div className="absolute top-6 right-6 flex flex-col gap-3 pointer-events-none">
