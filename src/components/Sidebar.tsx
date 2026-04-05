@@ -16,10 +16,10 @@ const navItems = [
     name: "Four QRs",
     icon: Layers,
     children: [
-      { name: "Classical Gram-Schmidt", href: "/four-qrs/cgs" },
-      { name: "Modified Gram-Schmidt", href: "/four-qrs/mgs" },
-      { name: "Householder", href: "/four-qrs/householder", disabled: true },
-      { name: "Givens", href: "/four-qrs/givens", disabled: true },
+      { name: "Classical Gram-Schmidt", href: "/four-qrs/cgs", disabled: false },
+      { name: "Modified Gram-Schmidt", href: "/four-qrs/mgs", disabled: false },
+      { name: "Householder", href: "/four-qrs/householder", disabled: false },
+      { name: "Givens", href: "/four-qrs/givens", disabled: false },
     ]
   },
   { name: "Other NLA Topics (coming soon)", href: "#", icon: Compass, disabled: true },
