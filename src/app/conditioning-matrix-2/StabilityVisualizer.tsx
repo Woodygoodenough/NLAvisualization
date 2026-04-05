@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import "katex/dist/katex.min.css";
+
 import { BlockMath, InlineMath } from "react-katex";
 import { Canvas } from "@react-three/fiber";
 import { Line, Html } from "@react-three/drei";

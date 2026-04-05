@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import "katex/dist/katex.min.css";
+
 import { BlockMath, InlineMath } from "react-katex";
 import Scene3D from "./Scene3D";
 

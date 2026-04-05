@@ -2,10 +2,13 @@
 > temp_app@0.1.0 dev
 > next dev
 
+⚠ Port 3000 is in use by an unknown process, using available port 3001 instead.
 ▲ Next.js 16.2.2 (Turbopack)
-- Local:         http://localhost:3000
-- Network:       http://192.168.0.2:3000
-✓ Ready in 1544ms
+- Local:         http://localhost:3001
+- Network:       http://192.168.0.2:3001
+✓ Ready in 1006ms
+⨯ Another next dev server is already running.
 
- GET /four-qrs/cgs 200 in 1288ms (next.js: 309ms, application-code: 979ms)
+- Local:        http://localhost:3000
+- PID:          536965 GET /four-qrs/cgs 200 in 2.2s (next.js: 648ms, application-code: 1572ms)
 [browser] THREE.THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
