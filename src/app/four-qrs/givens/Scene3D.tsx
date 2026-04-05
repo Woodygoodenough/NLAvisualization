@@ -14,7 +14,7 @@ function AnimatedVector({ endpoint, color, label }: { endpoint: [number, number,
 
   const { end } = useSpring({
     end: endpoint,
-    config: { mass: 1, tension: 120, friction: 14 }
+    config: { mass: 1, tension: 30, friction: 14 }
   });
 
   useFrame(() => {
@@ -144,13 +144,13 @@ export default function Scene3D({ step }: Scene3DProps) {
     return Math.atan2(s, c);
   };
 
-  // Step 2: Zero out a21 using rotation in (0,1) plane
-  const theta1 = getGivensAngle(A0[0].x, A0[0].y);
-  const A1 = applyGivens(A0, 0, 1, theta1);
+  // Step 2: Zero out a31 using rotation in (0,2) plane (bottom-up)
+  const theta1 = getGivensAngle(A0[0].x, A0[0].z);
+  const A1 = applyGivens(A0, 0, 2, theta1);
 
-  // Step 4: Zero out a31 using rotation in (0,2) plane
-  const theta2 = getGivensAngle(A1[0].x, A1[0].z);
-  const A2 = applyGivens(A1, 0, 2, theta2);
+  // Step 4: Zero out a21 using rotation in (0,1) plane
+  const theta2 = getGivensAngle(A1[0].x, A1[0].y);
+  const A2 = applyGivens(A1, 0, 1, theta2);
 
   // Step 6: Zero out a32 using rotation in (1,2) plane
   const theta3 = getGivensAngle(A2[1].y, A2[1].z);
@@ -164,19 +164,19 @@ export default function Scene3D({ step }: Scene3DProps) {
     currentA = A0;
   } else if (step === 1) {
     currentA = A0;
-    activePlane = [0, 1];
+    activePlane = [0, 2];
     showPlane = true;
   } else if (step === 2) {
     currentA = A1;
-    activePlane = [0, 1];
+    activePlane = [0, 2];
     showPlane = true;
   } else if (step === 3) {
     currentA = A1;
-    activePlane = [0, 2];
+    activePlane = [0, 1];
     showPlane = true;
   } else if (step === 4) {
     currentA = A2;
-    activePlane = [0, 2];
+    activePlane = [0, 1];
     showPlane = true;
   } else if (step === 5) {
     currentA = A2;

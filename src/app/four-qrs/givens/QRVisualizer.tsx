@@ -36,11 +36,11 @@ export default function GivensVisualizer() {
       return Math.atan2(s, c);
     };
 
-    const t1 = getGTheta(A0[0][0], A0[0][1]);
-    const A1 = applyG(A0, 0, 1, t1);
+    const t1 = getGTheta(A0[0][0], A0[0][2]);
+    const A1 = applyG(A0, 0, 2, t1);
 
-    const t2 = getGTheta(A1[0][0], A1[0][2]);
-    const A2 = applyG(A1, 0, 2, t2);
+    const t2 = getGTheta(A1[0][0], A1[0][1]);
+    const A2 = applyG(A1, 0, 1, t2);
 
     const t3 = getGTheta(A2[1][1], A2[1][2]);
     const A3 = applyG(A2, 1, 2, t3);
@@ -60,8 +60,9 @@ export default function GivensVisualizer() {
       return s === "-0.00" ? "0.00" : s;
     };
 
-    const z21 = step >= 2;
-    const z31 = step >= 4;
+    // Bottom-up: a31 is zeroed at step 2. a21 is zeroed at step 4. a32 is zeroed at step 6.
+    const z31 = step >= 2;
+    const z21 = step >= 4;
     const z32 = step >= 6;
 
     const row1 = `${fmt(currentA[0][0], false)} & ${fmt(currentA[1][0], false)} & ${fmt(currentA[2][0], false)}`;
@@ -74,10 +75,10 @@ export default function GivensVisualizer() {
   const getStepDescription = (s: number) => {
     switch (s) {
       case 0: return "Initial matrix $A$. The columns are shown as vectors.";
-      case 1: return "Determine Givens rotation $G(1,2,\\theta)$ in the $e_1$-$e_2$ plane to zero out $a_{21}$.";
-      case 2: return "Apply $G(1,2,\\theta)$ to all columns. The first column rotates within the $e_1$-$e_2$ plane to align with $e_1$.";
-      case 3: return "Determine rotation $G(1,3,\\theta)$ in the $e_1$-$e_3$ plane to zero out $a_{31}$.";
-      case 4: return "Apply $G(1,3,\\theta)$ to all columns. The first column is fully aligned with $e_1$.";
+      case 1: return "Determine Givens rotation $G(1,3,\\theta)$ in the $e_1$-$e_3$ plane to zero out the bottom entry $a_{31}$.";
+      case 2: return "Apply $G(1,3,\\theta)$ to all columns. The first column rotates within the $e_1$-$e_3$ plane.";
+      case 3: return "Determine rotation $G(1,2,\\theta)$ in the $e_1$-$e_2$ plane to zero out $a_{21}$.";
+      case 4: return "Apply $G(1,2,\\theta)$ to all columns. The first column is fully aligned with $e_1$.";
       case 5: return "Determine rotation $G(2,3,\\theta)$ in the $e_2$-$e_3$ plane to zero out $a_{32}$.";
       case 6: return "Apply $G(2,3,\\theta)$ to all columns. Matrix $A$ is now upper triangular $R$.";
       default: return "";
