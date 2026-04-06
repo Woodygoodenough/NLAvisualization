@@ -1,9 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
-import "katex/dist/katex.min.css";
-import { BlockMath } from "react-katex";
-import { Slider } from "@/components/ui/slider";
+
+import { BlockMath, InlineMath } from "react-katex";
 import Scene3D from "./Scene3D";
 
 export default function StabilityVisualizer() {
@@ -20,7 +19,7 @@ export default function StabilityVisualizer() {
       {/* Sidebar Info Panel */}
       <div className="w-full xl:w-[400px] flex-shrink-0 border-b xl:border-b-0 xl:border-r bg-white p-6 overflow-y-auto z-10 shadow-[0_0_15px_rgba(0,0,0,0.05)]">
         <div className="mb-6">
-          <h1 className="text-2xl font-bold tracking-tight mb-1 text-slate-900">LSE Stability I</h1>
+          <h1 className="text-2xl font-bold tracking-tight mb-1 text-slate-900">Conditioning of LSE I</h1>
           <p className="text-sm text-slate-500">Geometry of the Normal Equations</p>
         </div>
 
@@ -39,13 +38,13 @@ export default function StabilityVisualizer() {
           <section>
             <h2 className="text-sm font-semibold text-slate-700 uppercase tracking-wider mb-2">Core Idea</h2>
             <p className="text-sm text-slate-600 leading-relaxed">
-              This visualization shows how <span className="font-mono text-xs font-semibold bg-slate-100 px-1 py-0.5 rounded">b</span> is projected onto the plane defined by <span className="font-mono text-xs font-semibold bg-slate-100 px-1 py-0.5 rounded">A</span>, and why the sensitivity to perturbations scales like <span className="font-mono text-xs font-semibold bg-slate-100 px-1 py-0.5 rounded">1/cos(θ)</span>.
+              This visualization shows how <InlineMath math="\mathbf{b}" /> is projected onto the plane defined by <InlineMath math="A" />, and why the sensitivity to perturbations scales like <InlineMath math="\frac{1}{\cos\theta}" />.
             </p>
             <ul className="mt-3 text-sm text-slate-600 space-y-1.5 list-disc pl-4 marker:text-slate-400">
-              <li>Normalize <span className="font-mono text-xs">||b|| = 1</span></li>
-              <li>Then <span className="font-mono text-xs">||ŷ|| = cos(θ)</span></li>
-              <li>As θ approaches 90°, <span className="font-mono text-xs">cos(θ)</span> becomes small</li>
-              <li>So the sensitivity <span className="font-mono text-xs">1/cos(θ)</span> blows up</li>
+              <li>Normalize <InlineMath math="||\mathbf{b}|| = 1" /></li>
+              <li>Then <InlineMath math="||\mathbf{\hat{y}}|| = \cos\theta" /></li>
+              <li>As <InlineMath math="\theta \to 90^\circ" />, <InlineMath math="\cos\theta" /> becomes small</li>
+              <li>So the sensitivity <InlineMath math="\frac{1}{\cos\theta}" /> blows up</li>
             </ul>
           </section>
 
