@@ -174,7 +174,7 @@ export default function Scene3D({ phiRad, epsilon, deltaMinorRatio }: Scene3DPro
 
         {/* Local delta A Ellipse centered at tip of Ax */}
         <group position={ax}>
-          <Line points={deltaAEllipsePoints} color="#ef4444" lineWidth={1.5} />
+          <Line points={deltaAEllipsePoints} color="#ef4444" lineWidth={1.5} dashed dashScale={10} dashSize={0.05} gapSize={0.05} />
           {deltaMinorRatio === 0 && (
             <Html position={new THREE.Vector3(epsilon * 0.5, -0.2, 0)} center style={{ pointerEvents: 'none' }}>
               <div className="font-mono text-[10px] font-bold px-1.5 py-0.5 rounded bg-white/80 backdrop-blur-sm border border-red-200 shadow-sm whitespace-nowrap text-red-600">
