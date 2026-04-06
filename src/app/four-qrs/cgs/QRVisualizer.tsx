@@ -1,0 +1,138 @@
+"use client";
+
+import React, { useState } from "react";
+import Scene3D from "./Scene3D";
+import { InlineMath, BlockMath } from "react-katex";
+
+export default function CGSVisualizer() {
+  const [step, setStep] = useState(0);
+  const maxStep = 5;
+
+  // Render the R matrix live based on the current step
+  // We use \hphantom so that "0" takes up the same width as "r_{ij}" to prevent layout shifts.
+  const renderRMatrix = () => {
+    const formatEntry = (show: boolean, val: string) => {
+      return show ? val : `\\hphantom{${val}}\\llap{0}`;
+    };
+
+    const r11 = formatEntry(step >= 1, "r_{11}");
+    const r12 = formatEntry(step >= 2, "r_{12}");
+    const r13 = formatEntry(step >= 4, "r_{13}");
+    const r22 = formatEntry(step >= 3, "r_{22}");
+    const r23 = formatEntry(step >= 4, "r_{23}");
+    const r33 = formatEntry(step >= 5, "r_{33}");
+
+    const zero21 = formatEntry(false, "r_{21}"); // Use phantom space for zeros as well for alignment
+    const zero31 = formatEntry(false, "r_{31}");
+    const zero32 = formatEntry(false, "r_{32}");
+
+    // Using an array environment allows spacing out columns evenly
+    return `\\begin{bmatrix} ${r11} & ${r12} & ${r13} \\\\[0.5em] ${zero21} & ${r22} & ${r23} \\\\[0.5em] ${zero31} & ${zero32} & ${r33} \\end{bmatrix}`;
+  };
+
+  const getStepDescription = (s: number) => {
+    switch (s) {
+      case 0: return "Initial vectors $a_1, a_2, a_3$.";
+      case 1: return "Normalize $a_1$ to get $q_1$. This gives $r_{11} = \\|a_1\\|$.";
+      case 2: return "Project $a_2$ onto $q_1$. This gives $r_{12} = q_1^T a_2$.";
+      case 3: return "Subtract the projection from $a_2$ and normalize to get $q_2$. This gives $r_{22}$.";
+      case 4: return "Project $a_3$ onto $q_1$ and $q_2$. This gives $r_{13}$ and $r_{23}$.";
+      case 5: return "Subtract the projections from $a_3$ and normalize to get $q_3$. This gives $r_{33}$.";
+      default: return "";
+    }
+  };
+
+  // The fixed entries of the final R matrix (example values roughly matching visual)
+  // We'll just display them abstractly in the matrix, but we can show concrete numbers below if desired.
+
+  return (
+    <div className="flex h-[calc(100vh-theme(spacing.14))] w-full">
+      {/* Left Sidebar for Controls & Explanation */}
+      <div className="w-1/3 min-w-[320px] max-w-[400px] border-r bg-white p-6 overflow-y-auto flex flex-col shadow-sm z-10">
+
+        <div className="mb-4">
+          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Classical Gram-Schmidt</h1>
+          <p className="text-sm text-slate-500 mt-1">Orthogonalizing a set of vectors</p>
+        </div>
+
+        <div className="bg-slate-50/50 rounded-xl p-4 border border-slate-100 mb-4 space-y-4">
+          <div>
+            <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Algorithm</h3>
+            <p className="text-sm text-slate-700 leading-relaxed">
+              We process each vector <InlineMath math="a_j" /> in turn. First, we project it onto all previously computed orthogonal vectors <InlineMath math="q_i" /> (where <InlineMath math="i < j" />). We subtract these projections to get a residual vector <InlineMath math="u_j" />, which is orthogonal to all previous <InlineMath math="q_i" />. Finally, we normalize <InlineMath math="u_j" /> to get <InlineMath math="q_j" />.
+            </p>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-xl p-4 border border-slate-200 mb-4 shadow-sm">
+          <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-4">Step-by-Step Construction</h3>
+
+          <div className="mb-4">
+            <div className="flex justify-between items-center mb-2">
+              <span className="text-sm font-medium text-slate-700">Step {step} of {maxStep}</span>
+              <div className="flex space-x-2">
+                <button
+                  onClick={() => setStep(Math.max(0, step - 1))}
+                  disabled={step === 0}
+                  className="px-2 py-1 text-xs font-medium text-slate-600 bg-slate-100 rounded hover:bg-slate-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Prev
+                </button>
+                <button
+                  onClick={() => setStep(Math.min(maxStep, step + 1))}
+                  disabled={step === maxStep}
+                  className="px-2 py-1 text-xs font-medium text-slate-600 bg-slate-100 rounded hover:bg-slate-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Next
+                </button>
+              </div>
+            </div>
+            <input
+              type="range"
+              min="0"
+              max={maxStep}
+              step="1"
+              value={step}
+              onChange={(e) => setStep(parseInt(e.target.value))}
+              className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-indigo-600"
+            />
+            <div className="flex justify-between text-xs text-slate-400 mt-1 px-1">
+              <span>Start</span>
+              <span>Finish</span>
+            </div>
+          </div>
+
+          <div className="bg-indigo-50/50 border border-indigo-100 p-4 rounded-lg text-sm text-indigo-900 min-h-[80px] flex items-center">
+            <span>
+              {/* Parse the string to render InlineMath appropriately */}
+              {getStepDescription(step).split('$').map((part, index) =>
+                index % 2 === 1 ? <InlineMath key={index} math={part} /> : part
+              )}
+            </span>
+          </div>
+        </div>
+
+        <div className="bg-slate-50/50 rounded-xl p-4 border border-slate-100 mt-auto flex-shrink-0">
+          <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">R Matrix Construction</h3>
+          <div className="flex justify-center text-xl my-4 text-slate-800 w-full overflow-x-auto min-h-[100px] items-center py-2">
+             <BlockMath math={`R = ${renderRMatrix()}`} />
+          </div>
+          <p className="text-xs text-slate-500 text-center">
+             Entries <InlineMath math="r_{ij} = q_i^T a_j" /> and <InlineMath math="r_{jj} = \|u_j\|" />
+          </p>
+        </div>
+
+      </div>
+
+      {/* Right Content for 3D Scene */}
+      <div className="flex-1 relative bg-slate-50">
+        <Scene3D step={step} />
+
+        {/* Helper overlay */}
+        <div className="absolute bottom-6 right-6 bg-white/80 backdrop-blur-sm px-4 py-2 rounded-lg border border-slate-200 shadow-sm pointer-events-none">
+          <p className="text-xs text-slate-500">Click & drag to rotate camera</p>
+        </div>
+      </div>
+    </div>
+  );
+}
