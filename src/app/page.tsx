@@ -24,9 +24,9 @@ export default function Dashboard() {
     },
     {
       title: "Conditioning of LSE II",
-      description: "Advanced perturbations in numerical linear algebra. (Coming soon)",
-      href: "#",
-      implemented: false,
+      description: "Sensitivity of the least squares solution to matrix perturbations.",
+      href: "/lse-stability-2",
+      implemented: true,
     },
     {
       title: "Classical Gram-Schmidt",

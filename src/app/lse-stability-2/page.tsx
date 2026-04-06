@@ -1,11 +1,10 @@
-import StabilityVisualizer from "./StabilityVisualizer";
-import type { Metadata } from "next";
+import StabilityVisualizer from './StabilityVisualizer';
 
-export const metadata: Metadata = {
-  title: "LSE Stability II | NLA Visualizations",
-  description: "Geometry of the Normal Equations - Sensitivity to A",
+export const metadata = {
+  title: 'Conditioning of LSE II | NLA Visualizations',
+  description: 'Interactive explorable explanation of LSE sensitivity to matrix perturbations.',
 };
 
-export default function LSEStability2Page() {
+export default function Page() {
   return <StabilityVisualizer />;
 }
