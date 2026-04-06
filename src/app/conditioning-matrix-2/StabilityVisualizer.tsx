@@ -37,6 +37,7 @@ const DomainView = ({ phiRad }: { phiRad: number }) => {
 
 export default function StabilityVisualizer() {
   const [phiDeg, setPhiDeg] = useState(45);
+  const [deltaMinorRatio, setDeltaMinorRatio] = useState(0.4);
 
   const phiRad = (phiDeg * Math.PI) / 180;
 
@@ -125,6 +126,40 @@ export default function StabilityVisualizer() {
                   Worst-Case Input
                 </button>
               </div>
+
+              <div className="space-y-3 pt-2">
+                <div className="flex items-center justify-between">
+                  <label className="text-sm font-medium text-slate-700 flex items-center gap-2">
+                    <span className="font-mono text-xs">σ₂(δA)</span>
+                  </label>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => setDeltaMinorRatio(0)}
+                      disabled={deltaMinorRatio === 0}
+                      className="px-2 py-1 text-[10px] uppercase tracking-wider font-semibold text-slate-600 bg-slate-100 rounded hover:bg-slate-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    >
+                      Rank-1 perturb
+                    </button>
+                    <span className="text-sm font-mono text-slate-500 bg-slate-100 px-2 py-0.5 rounded min-w-[3rem] text-center">
+                      {deltaMinorRatio.toFixed(2)}
+                    </span>
+                  </div>
+                </div>
+                <input
+                  type="range"
+                  min="0"
+                  max="0.5"
+                  step="0.01"
+                  value={deltaMinorRatio}
+                  onChange={(e) => setDeltaMinorRatio(parseFloat(e.target.value))}
+                  className="w-full accent-slate-800"
+                />
+                <div className="flex justify-between text-xs text-slate-400 font-mono">
+                  <span>0 (Rank-1)</span>
+                  <span>0.5 (Full)</span>
+                </div>
+              </div>
+
             </div>
           </section>
         </div>
@@ -132,7 +167,7 @@ export default function StabilityVisualizer() {
 
       {/* 3D Visualization Area */}
       <div className="flex-1 relative bg-slate-50 h-[500px] xl:h-auto min-h-0">
-        <Scene3D phiRad={phiRad} epsilon={epsilon} />
+        <Scene3D phiRad={phiRad} epsilon={epsilon} deltaMinorRatio={deltaMinorRatio} />
 
         {/* Inset Domain View */}
         <div className="absolute bottom-6 left-6 w-32 h-32 bg-white/90 backdrop-blur border border-slate-200 shadow-sm rounded-lg overflow-hidden pointer-events-none">

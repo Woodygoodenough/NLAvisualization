@@ -8,6 +8,7 @@ import * as THREE from "three";
 interface Scene3DProps {
   phiRad: number;
   epsilon: number;
+  deltaMinorRatio: number;
 }
 
 const VectorArrow = ({ start, end, color, label, showLabel = true, labelOffset = 0.05, dash = false, lineWidth = 1.5 }: { start: THREE.Vector3, end: THREE.Vector3, color: string, label: string, showLabel?: boolean, labelOffset?: number, dash?: boolean, lineWidth?: number }) => {
@@ -40,12 +41,9 @@ const VectorArrow = ({ start, end, color, label, showLabel = true, labelOffset =
   );
 };
 
-export default function Scene3D({ phiRad, epsilon }: Scene3DProps) {
+export default function Scene3D({ phiRad, epsilon, deltaMinorRatio }: Scene3DProps) {
   const sigma1 = 2.0;
   const sigma2 = 0.5;
-
-  // Fixed parameters for the worst-case representative ellipse
-  const deltaMinorRatio = 0.4; // Fixed 0.4 ratio to look like an ellipse
 
   const u1 = useMemo(() => new THREE.Vector3(1, 0, 0), []);
   const u2 = useMemo(() => new THREE.Vector3(0, 0, 1), []);
@@ -177,6 +175,13 @@ export default function Scene3D({ phiRad, epsilon }: Scene3DProps) {
         {/* Local delta A Ellipse centered at tip of Ax */}
         <group position={ax}>
           <Line points={deltaAEllipsePoints} color="#ef4444" lineWidth={1.5} />
+          {deltaMinorRatio === 0 && (
+            <Html position={new THREE.Vector3(epsilon * 0.5, -0.2, 0)} center style={{ pointerEvents: 'none' }}>
+              <div className="font-mono text-[10px] font-bold px-1.5 py-0.5 rounded bg-white/80 backdrop-blur-sm border border-red-200 shadow-sm whitespace-nowrap text-red-600">
+                Rank-1 Perturbation
+              </div>
+            </Html>
+          )}
         </group>
 
         {/* Vector Ax */}
