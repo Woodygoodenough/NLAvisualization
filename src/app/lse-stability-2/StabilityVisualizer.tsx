@@ -143,8 +143,8 @@ export default function StabilityVisualizer() {
         {/* Overlay Metrics */}
         <div className="absolute top-6 right-6 flex flex-col gap-3 pointer-events-none">
           <div className="bg-white/90 backdrop-blur border border-slate-200 shadow-sm rounded-lg p-3 w-48 text-center">
-            <div className="text-[10px] uppercase font-semibold text-emerald-600 mb-1 tracking-wider">||y|| = cos(θ)</div>
-            <div className="font-mono text-lg font-medium text-slate-800">{cosTheta.toFixed(3)}</div>
+            <div className="text-[10px] uppercase font-semibold text-emerald-600 mb-1 tracking-wider">||r|| = tan(θ)</div>
+            <div className="font-mono text-lg font-medium text-slate-800">{Math.tan(thetaRad).toFixed(3)}</div>
           </div>
         </div>
 
