@@ -44,11 +44,23 @@ export default function Scene3D({ thetaRad, phiRad, epsilon, deltaMinorRatio }: 
   const u2 = useMemo(() => new THREE.Vector3(0, 0, 1), []);
   const u3 = useMemo(() => new THREE.Vector3(0, 1, 0), []);
 
+  // Define A_nom dimensions: major axis = 2 (along X), minor axis = 1 (along Z)
+  const sigma1 = 2.0;
+  const sigma2 = 1.0;
+
   // Compute b
   // Fix b so that yhat happens to be exactly at the boundary of Span(A)
-  // Since A maps the unit circle to a unit circle, yhat should have length 1
-  const yLen = 1.0;
-  const rLen = Math.tan(thetaRad);
+  // Since A maps the unit circle to an ellipse in the XZ plane, yhat's length depends on its angle phi
+  // Equation of ellipse: (x/2)^2 + (z/1)^2 = 1.
+  // With x = yLen * cos(phi) and z = yLen * sin(phi):
+  // yLen^2 * (cos^2(phi)/4 + sin^2(phi)) = 1 => yLen = 1 / sqrt(cos^2(phi)/4 + sin^2(phi))
+  const yLen = useMemo(() => {
+    const c = Math.cos(phiRad);
+    const s = Math.sin(phiRad);
+    return 1.0 / Math.sqrt((c * c) / (sigma1 * sigma1) + (s * s) / (sigma2 * sigma2));
+  }, [phiRad]);
+
+  const rLen = yLen * Math.tan(thetaRad);
 
   const yDir = useMemo(() => {
     return new THREE.Vector3(Math.cos(phiRad), 0, Math.sin(phiRad));
@@ -60,17 +72,23 @@ export default function Scene3D({ thetaRad, phiRad, epsilon, deltaMinorRatio }: 
   const r = useMemo(() => new THREE.Vector3(0, rLen, 0), [rLen]);
   const b = useMemo(() => y.clone().add(r), [y, r]);
 
-  // Define basis for A_nom (mapping the standard 2D basis e1, e2 into 3D)
-  // Let a1 be yDir (the direction of y), and a2 be orthogonal to it in the XZ plane.
-  // This means A_nom maps the domain unit circle to the XZ unit circle, with (1,0) mapping to yDir.
-  const a1 = useMemo(() => new THREE.Vector3(Math.cos(phiRad), 0, Math.sin(phiRad)), [phiRad]);
-  const a2 = useMemo(() => new THREE.Vector3(-Math.sin(phiRad), 0, Math.cos(phiRad)), [phiRad]);
+  // Find the domain angle alpha that maps to y
+  // A_nom(alpha) = (sigma1 * cos(alpha), 0, sigma2 * sin(alpha)) = (y.x, 0, y.z)
+  // cos(alpha) = y.x / sigma1, sin(alpha) = y.z / sigma2
+  const alpha = useMemo(() => Math.atan2(y.z / sigma2, y.x / sigma1), [y, sigma1, sigma2]);
+
+  // Define basis for A_nom based on the domain vector mapping to y
+  // Let a1 be the image of the domain vector (cos(alpha), sin(alpha)), which equals y.
+  // Let a2 be the image of the orthogonal domain vector (-sin(alpha), cos(alpha)).
+  const a1 = useMemo(() => new THREE.Vector3(sigma1 * Math.cos(alpha), 0, sigma2 * Math.sin(alpha)), [alpha, sigma1, sigma2]);
+  const a2 = useMemo(() => new THREE.Vector3(-sigma1 * Math.sin(alpha), 0, sigma2 * Math.cos(alpha)), [alpha, sigma1, sigma2]);
 
   // Define basis for deltaA
-  // deltaA maps (1,0) (which is the direction producing yDir) to the residual direction (Y axis), scaled by epsilon.
-  // deltaA maps (0,1) to an orthogonal direction in the XZ plane (a2), scaled by epsilon * deltaMinorRatio.
+  // deltaA maps the domain vector producing y to the residual direction (Y axis), scaled by epsilon.
+  // deltaA maps the orthogonal domain vector to a2, scaled by epsilon * deltaMinorRatio.
+  // (We normalize a2 for scaling the minor axis of delta A to keep it proportional to epsilon)
   const d1 = useMemo(() => new THREE.Vector3(0, epsilon, 0), [epsilon]);
-  const d2 = useMemo(() => a2.clone().multiplyScalar(epsilon * deltaMinorRatio), [a2, epsilon, deltaMinorRatio]);
+  const d2 = useMemo(() => a2.clone().normalize().multiplyScalar(epsilon * deltaMinorRatio), [a2, epsilon, deltaMinorRatio]);
 
   // Define perturbed basis A_pert = A_nom + deltaA
   const ap1 = useMemo(() => a1.clone().add(d1), [a1, d1]);
@@ -81,7 +99,7 @@ export default function Scene3D({ thetaRad, phiRad, epsilon, deltaMinorRatio }: 
     const pts = [];
     for(let i=0; i<=64; i++) {
       const a = (i/64) * Math.PI * 2;
-      // Evaluate deltaA(alpha) = cos(a)*d1 + sin(a)*d2
+      // Evaluate deltaA relative to alpha
       pts.push(d1.clone().multiplyScalar(Math.cos(a)).add(d2.clone().multiplyScalar(Math.sin(a))));
     }
     return pts;
@@ -90,19 +108,21 @@ export default function Scene3D({ thetaRad, phiRad, epsilon, deltaMinorRatio }: 
   // Perturbed A mapped circle (Span(A + deltaA))
   const { perturbedPlanePoints, perturbedPlaneIndices, perturbedPlaneVertices } = useMemo(() => {
     const pts = [];
-    // For solid mesh (triangle fan): center at origin, plus perimeter points
     const verts = [0, 0, 0];
     const indices = [];
 
     for(let i=0; i<=64; i++) {
       const a = (i/64) * Math.PI * 2;
-      // Evaluate A_pert(alpha) = cos(a)*ap1 + sin(a)*ap2
-      const p = ap1.clone().multiplyScalar(Math.cos(a)).add(ap2.clone().multiplyScalar(Math.sin(a)));
+      // We map the standard domain circle [cos(a), sin(a)]
+      // The basis ap1 corresponds to domain [cos(alpha), sin(alpha)]
+      // The basis ap2 corresponds to domain [-sin(alpha), cos(alpha)]
+      // So domain [cos(a), sin(a)] can be written as cos(a-alpha) * e1' + sin(a-alpha) * e2'
+      const relativeAngle = a - alpha;
+      const p = ap1.clone().multiplyScalar(Math.cos(relativeAngle)).add(ap2.clone().multiplyScalar(Math.sin(relativeAngle)));
       pts.push(p);
       verts.push(p.x, p.y, p.z);
     }
 
-    // Create indices for triangle fan
     for (let i = 1; i <= 64; i++) {
       indices.push(0, i, i + 1);
     }
@@ -112,7 +132,7 @@ export default function Scene3D({ thetaRad, phiRad, epsilon, deltaMinorRatio }: 
       perturbedPlaneVertices: new Float32Array(verts),
       perturbedPlaneIndices: new Uint16Array(indices)
     };
-  }, [ap1, ap2]);
+  }, [ap1, ap2, alpha]);
 
   // Calculate y_pert (projection of b onto Span(A + deltaA))
   const y_pert = useMemo(() => {
@@ -135,12 +155,12 @@ export default function Scene3D({ thetaRad, phiRad, epsilon, deltaMinorRatio }: 
       <Grid args={[10, 10]} cellSize={1} cellThickness={1} cellColor="#e2e8f0" sectionSize={1} sectionThickness={1.5} sectionColor="#cbd5e1" fadeDistance={20} infiniteGrid />
 
       <group>
-        {/* Unperturbed Span(A) Circle */}
+        {/* Unperturbed Span(A) Ellipse */}
         <Line points={useMemo(() => {
             const pts = [];
             for(let i=0; i<=64; i++){
                 const a = i/64*Math.PI*2;
-                pts.push(new THREE.Vector3(Math.cos(a), 0, Math.sin(a)));
+                pts.push(new THREE.Vector3(2.0 * Math.cos(a), 0, 1.0 * Math.sin(a)));
             }
             return pts;
         }, [])} color="#94a3b8" lineWidth={2} />

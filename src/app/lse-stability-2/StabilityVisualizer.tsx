@@ -96,6 +96,14 @@ export default function StabilityVisualizer() {
                   onChange={(e) => setPhiDeg(parseFloat(e.target.value))}
                   className="w-full accent-slate-800"
                 />
+                <div className="pt-1 flex gap-2">
+                  <button
+                    onClick={() => setPhiDeg(90)}
+                    className="flex-1 py-1.5 px-3 bg-red-50 hover:bg-red-100 text-red-700 text-xs font-medium rounded-md border border-red-200 transition-colors shadow-sm"
+                  >
+                    Worst-Case Direction
+                  </button>
+                </div>
               </div>
 
               {/* Sigma_2(delta A) Control */}
@@ -143,8 +151,16 @@ export default function StabilityVisualizer() {
         {/* Overlay Metrics */}
         <div className="absolute top-6 right-6 flex flex-col gap-3 pointer-events-none">
           <div className="bg-white/90 backdrop-blur border border-slate-200 shadow-sm rounded-lg p-3 w-48 text-center">
-            <div className="text-[10px] uppercase font-semibold text-emerald-600 mb-1 tracking-wider">||r|| = tan(θ)</div>
-            <div className="font-mono text-lg font-medium text-slate-800">{Math.tan(thetaRad).toFixed(3)}</div>
+            <div className="text-[10px] uppercase font-semibold text-emerald-600 mb-1 tracking-wider">||ŷ||</div>
+            <div className="font-mono text-lg font-medium text-slate-800">
+              {(1.0 / Math.sqrt((Math.cos(phiRad)*Math.cos(phiRad))/4.0 + (Math.sin(phiRad)*Math.sin(phiRad)))).toFixed(3)}
+            </div>
+          </div>
+          <div className="bg-white/90 backdrop-blur border border-slate-200 shadow-sm rounded-lg p-3 w-48 text-center">
+            <div className="text-[10px] uppercase font-semibold text-slate-600 mb-1 tracking-wider">||r||</div>
+            <div className="font-mono text-lg font-medium text-slate-800">
+              {((1.0 / Math.sqrt((Math.cos(phiRad)*Math.cos(phiRad))/4.0 + (Math.sin(phiRad)*Math.sin(phiRad)))) * Math.tan(thetaRad)).toFixed(3)}
+            </div>
           </div>
         </div>
 
