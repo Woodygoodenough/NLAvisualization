@@ -60,29 +60,34 @@ export default function Scene3D({ thetaRad, phiRad, epsilon, deltaMinorRatio }: 
   const r = useMemo(() => new THREE.Vector3(0, rLen, 0), [rLen]);
   const b = useMemo(() => y.clone().add(r), [y, r]);
 
-  // Construct delta A
-  // We want the long axis of delta A to align with the residual r (the Y axis).
-  // The domain is the standard 2D circle. Let's map it such that a specific domain vector
-  // corresponding to x (where Ax = y) maps to epsilon * (r / ||r||).
-  // Actually, we visualize the column space. A maps to the XZ circle.
-  // delta A maps to an ellipse whose major axis is parallel to Y (r), length epsilon.
-  // Minor axis is some vector in XZ plane, length epsilon * deltaMinorRatio.
+  // Define basis for A_nom (mapping the standard 2D basis e1, e2 into 3D)
+  // Let a1 be yDir (the direction of y), and a2 be orthogonal to it in the XZ plane.
+  // This means A_nom maps the domain unit circle to the XZ unit circle, with (1,0) mapping to yDir.
+  const a1 = useMemo(() => new THREE.Vector3(Math.cos(phiRad), 0, Math.sin(phiRad)), [phiRad]);
+  const a2 = useMemo(() => new THREE.Vector3(-Math.sin(phiRad), 0, Math.cos(phiRad)), [phiRad]);
 
-  const vMaj = useMemo(() => new THREE.Vector3(0, epsilon, 0), [epsilon]);
-  const vMin = useMemo(() => new THREE.Vector3(1, 0, 0).applyAxisAngle(new THREE.Vector3(0,1,0), -(phiRad + Math.PI/2)).multiplyScalar(epsilon * deltaMinorRatio), [epsilon, deltaMinorRatio, phiRad]);
+  // Define basis for deltaA
+  // deltaA maps (1,0) (which is the direction producing yDir) to the residual direction (Y axis), scaled by epsilon.
+  // deltaA maps (0,1) to an orthogonal direction in the XZ plane (a2), scaled by epsilon * deltaMinorRatio.
+  const d1 = useMemo(() => new THREE.Vector3(0, epsilon, 0), [epsilon]);
+  const d2 = useMemo(() => a2.clone().multiplyScalar(epsilon * deltaMinorRatio), [a2, epsilon, deltaMinorRatio]);
+
+  // Define perturbed basis A_pert = A_nom + deltaA
+  const ap1 = useMemo(() => a1.clone().add(d1), [a1, d1]);
+  const ap2 = useMemo(() => a2.clone().add(d2), [a2, d2]);
 
   // Delta A mapped circle points
   const deltaACircle = useMemo(() => {
     const pts = [];
     for(let i=0; i<=64; i++) {
       const a = (i/64) * Math.PI * 2;
-      pts.push(vMaj.clone().multiplyScalar(Math.cos(a)).add(vMin.clone().multiplyScalar(Math.sin(a))));
+      // Evaluate deltaA(alpha) = cos(a)*d1 + sin(a)*d2
+      pts.push(d1.clone().multiplyScalar(Math.cos(a)).add(d2.clone().multiplyScalar(Math.sin(a))));
     }
     return pts;
-  }, [vMaj, vMin]);
+  }, [d1, d2]);
 
   // Perturbed A mapped circle (Span(A + deltaA))
-  // A maps to (cos a, 0, sin a).
   const { perturbedPlanePoints, perturbedPlaneIndices, perturbedPlaneVertices } = useMemo(() => {
     const pts = [];
     // For solid mesh (triangle fan): center at origin, plus perimeter points
@@ -91,9 +96,8 @@ export default function Scene3D({ thetaRad, phiRad, epsilon, deltaMinorRatio }: 
 
     for(let i=0; i<=64; i++) {
       const a = (i/64) * Math.PI * 2;
-      const base = new THREE.Vector3(Math.cos(a), 0, Math.sin(a));
-      const diff = vMaj.clone().multiplyScalar(Math.cos(a)).add(vMin.clone().multiplyScalar(Math.sin(a)));
-      const p = base.add(diff);
+      // Evaluate A_pert(alpha) = cos(a)*ap1 + sin(a)*ap2
+      const p = ap1.clone().multiplyScalar(Math.cos(a)).add(ap2.clone().multiplyScalar(Math.sin(a)));
       pts.push(p);
       verts.push(p.x, p.y, p.z);
     }
@@ -108,28 +112,10 @@ export default function Scene3D({ thetaRad, phiRad, epsilon, deltaMinorRatio }: 
       perturbedPlaneVertices: new Float32Array(verts),
       perturbedPlaneIndices: new Uint16Array(indices)
     };
-  }, [vMaj, vMin]);
+  }, [ap1, ap2]);
 
   // Calculate y_pert (projection of b onto Span(A + deltaA))
-  // We have the basis for the perturbed plane:
-  // Let's compute it rigorously.
-  // Let A_nom = [cos(phi) -sin(phi); 0 0; sin(phi) cos(phi)]  (so first col is yDir, second is orthogonal)
-
   const y_pert = useMemo(() => {
-    const c = Math.cos(phiRad);
-    const s = Math.sin(phiRad);
-
-    // A_nom basis
-    const a1 = new THREE.Vector3(c, 0, s);
-    const a2 = new THREE.Vector3(-s, 0, c);
-
-    // deltaA basis
-    const d1 = new THREE.Vector3(0, epsilon, 0);
-    const d2 = a2.clone().multiplyScalar(epsilon * deltaMinorRatio);
-
-    const ap1 = a1.clone().add(d1);
-    const ap2 = a2.clone().add(d2);
-
     // Project b onto span(ap1, ap2)
     // normal vector n = ap1 x ap2
     const n = new THREE.Vector3().crossVectors(ap1, ap2).normalize();
@@ -137,7 +123,7 @@ export default function Scene3D({ thetaRad, phiRad, epsilon, deltaMinorRatio }: 
     // y_pert = b - (b dot n) n
     const b_dot_n = b.dot(n);
     return b.clone().sub(n.multiplyScalar(b_dot_n));
-  }, [phiRad, epsilon, deltaMinorRatio, b]);
+  }, [ap1, ap2, b]);
 
 
   return (
