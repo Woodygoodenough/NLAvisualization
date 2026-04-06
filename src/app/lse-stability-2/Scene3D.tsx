@@ -45,9 +45,10 @@ export default function Scene3D({ thetaRad, phiRad, epsilon, deltaMinorRatio }: 
   const u3 = useMemo(() => new THREE.Vector3(0, 1, 0), []);
 
   // Compute b
-  // y is in the XZ plane
-  const yLen = Math.cos(thetaRad);
-  const rLen = Math.sin(thetaRad);
+  // Fix b so that yhat happens to be exactly at the boundary of Span(A)
+  // Since A maps the unit circle to a unit circle, yhat should have length 1
+  const yLen = 1.0;
+  const rLen = Math.tan(thetaRad);
 
   const yDir = useMemo(() => {
     return new THREE.Vector3(Math.cos(phiRad), 0, Math.sin(phiRad));
