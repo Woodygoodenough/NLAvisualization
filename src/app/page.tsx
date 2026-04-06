@@ -29,6 +29,30 @@ export default function Dashboard() {
       implemented: false,
     },
     {
+      title: "Classical Gram-Schmidt",
+      description: "Visualize orthogonalization using standard projections.",
+      href: "/four-qrs/cgs",
+      implemented: true,
+    },
+    {
+      title: "Modified Gram-Schmidt",
+      description: "Visualize numerically stable orthogonalization.",
+      href: "/four-qrs/mgs",
+      implemented: true,
+    },
+    {
+      title: "Householder Reflections",
+      description: "Visualize QR factorization using Householder reflections in 3D.",
+      href: "/four-qrs/householder",
+      implemented: true,
+    },
+    {
+      title: "Givens Rotations",
+      description: "Visualize QR factorization using Givens rotations in 3D.",
+      href: "/four-qrs/givens",
+      implemented: true,
+    },
+    {
       title: "Other NLA Topics",
       description: "Eigenvalue sensitivities, SVD, and Krylov subspace methods. (Coming soon)",
       href: "#",
