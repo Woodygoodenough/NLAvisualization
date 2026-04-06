@@ -87,16 +87,19 @@ export default function Scene3D({ thetaRad, phiRad }: Scene3DProps) {
       {/* Orbit Controls */}
       <OrbitControls makeDefault minPolarAngle={0} maxPolarAngle={Math.PI / 2 + 0.2} enablePan={false} />
 
-      {/* Grid serving as Span(A) */}
+      {/* Grid and Subspace Plane */}
       <group>
         <Grid
           infiniteGrid
-          fadeDistance={15}
+          fadeDistance={10}
           sectionColor="#cbd5e1"
           cellColor="#e2e8f0"
           cellSize={0.5}
           sectionSize={1}
         />
+        <Plane args={[10, 10]} rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]}>
+          <meshBasicMaterial color="#e0f2fe" transparent opacity={0.3} side={THREE.DoubleSide} depthWrite={false} />
+        </Plane>
 
         {/* Subspace label */}
         <Html position={[1.5, 0, -1.5]} style={{ pointerEvents: 'none' }}>

@@ -1,36 +1,35 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# NLA Visualization
 
-## Getting Started
+A Next.js application providing interactive, geometry-first explorable explanations for Numerical Linear Algebra.
 
-First, run the development server:
+## Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **Conditioning of Matrix I & II:** Visualize the pointwise condition number of a matrix and the effects of rank-1 perturbations on the matrix domain.
+- **Conditioning of LSE I & II:** Explore the sensitivity of the least squares solution to perturbations in the right-hand side vector b and the matrix A.
+- **Four QRs:** Step-by-step 3D visualizations of four standard QR factorization algorithms:
+  - Classical Gram-Schmidt
+  - Modified Gram-Schmidt
+  - Householder Reflections
+  - Givens Rotations
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Tech Stack
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- React
+- Next.js (App Router)
+- TypeScript
+- Tailwind CSS
+- Three.js (`@react-three/fiber`, `@react-three/drei`)
+- React Spring (`@react-spring/three`)
+- KaTeX (`react-katex`)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Development
 
-## Learn More
+Install dependencies:
 
-To learn more about Next.js, take a look at the following resources:
+`npm install`
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Start the local development server:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+`npm run dev`
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
