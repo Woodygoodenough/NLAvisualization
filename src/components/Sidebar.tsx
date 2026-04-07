@@ -22,6 +22,7 @@ const navItems = [
       { name: "Givens", href: "/four-qrs/givens", disabled: false },
     ]
   },
+  { name: "SVD vs Eigenvalue", href: "/svd-vs-eigen", icon: Compass },
   { name: "Other NLA Topics (coming soon)", href: "#", icon: Compass, disabled: true },
 ];
 
