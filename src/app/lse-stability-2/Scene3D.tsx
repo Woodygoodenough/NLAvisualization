@@ -207,6 +207,9 @@ export default function Scene3D({ thetaRad, phiRad, epsilon, deltaMinorRatio }: 
         {/* y_pert */}
         <VectorArrow start={new THREE.Vector3(0,0,0)} end={y_pert} color="#eab308" label="ŷ'" />
 
+        {/* new residual r' */}
+        <VectorArrow start={y_pert} end={b} color="#94a3b8" label="r'" dashed={true} />
+
         {/* delta y */}
         <VectorArrow start={y} end={y_pert} color="#ef4444" label="δŷ" />
 
