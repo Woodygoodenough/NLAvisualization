@@ -145,6 +145,25 @@ export default function Scene3D({ thetaRad, phiRad, epsilon, deltaMinorRatio }: 
     return b.clone().sub(n.multiplyScalar(b_dot_n));
   }, [ap1, ap2, b]);
 
+  // Geometric constraints for the textbook explanation
+  const bCenter = useMemo(() => b.clone().multiplyScalar(0.5), [b]);
+  const bRadius = useMemo(() => b.length() / 2, [b]);
+
+  // The large circle on the sphere where y' moves
+  // This circle lies in the plane defined by b and y (which is the y-r plane, or YZ plane since phi=90)
+  // Let's create orthogonal basis vectors for this plane. y and r are already orthogonal.
+  const cBasis1 = useMemo(() => y.clone().normalize(), [y]);
+  const cBasis2 = useMemo(() => r.clone().normalize(), [r]);
+
+  const largeCirclePoints = useMemo(() => {
+    const pts = [];
+    for(let i=0; i<=64; i++) {
+      const a = (i/64) * Math.PI * 2;
+      pts.push(bCenter.clone().add(cBasis1.clone().multiplyScalar(Math.cos(a)*bRadius)).add(cBasis2.clone().multiplyScalar(Math.sin(a)*bRadius)));
+    }
+    return pts;
+  }, [bCenter, cBasis1, cBasis2, bRadius]);
+
 
   return (
     <Canvas camera={{ position: [3, 2, 4], fov: 45 }}>
@@ -155,6 +174,24 @@ export default function Scene3D({ thetaRad, phiRad, epsilon, deltaMinorRatio }: 
       <Grid args={[10, 10]} cellSize={1} cellThickness={1} cellColor="#e2e8f0" sectionSize={1} sectionThickness={1.5} sectionColor="#cbd5e1" fadeDistance={20} infiniteGrid />
 
       <group>
+        {/* Textbook Geometry: The Sphere/Large Circle */}
+        <Line points={largeCirclePoints} color="#3b82f6" lineWidth={1.5} dashed dashScale={10} dashSize={0.1} gapSize={0.05} />
+
+        {/* Center b/2 */}
+        <mesh position={bCenter}>
+          <sphereGeometry args={[0.04, 16, 16]} />
+          <meshBasicMaterial color="#3b82f6" />
+        </mesh>
+        <Html position={bCenter} center style={{ pointerEvents: 'none' }}>
+          <div className="font-serif italic text-xs font-bold px-1.5 py-0.5 rounded text-blue-600 bg-white/80 backdrop-blur-sm border border-blue-200 shadow-sm transform translate-y-3">
+            b/2
+          </div>
+        </Html>
+
+        {/* Line from b/2 to y and y_pert to show the 2 theta angle */}
+        <Line points={[bCenter, y]} color="#94a3b8" lineWidth={1} dashed dashScale={10} dashSize={0.05} gapSize={0.05} />
+        <Line points={[bCenter, y_pert]} color="#ca8a04" lineWidth={1} dashed dashScale={10} dashSize={0.05} gapSize={0.05} />
+
         {/* Unperturbed Span(A) Ellipse */}
         <Line points={useMemo(() => {
             const pts = [];
@@ -206,6 +243,9 @@ export default function Scene3D({ thetaRad, phiRad, epsilon, deltaMinorRatio }: 
 
         {/* y_pert */}
         <VectorArrow start={new THREE.Vector3(0,0,0)} end={y_pert} color="#eab308" label="ŷ'" />
+
+        {/* new residual r' */}
+        <VectorArrow start={y_pert} end={b} color="#94a3b8" label="r'" dashed={true} />
 
         {/* delta y */}
         <VectorArrow start={y} end={y_pert} color="#ef4444" label="δŷ" />
