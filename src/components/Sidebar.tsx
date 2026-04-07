@@ -11,7 +11,7 @@ const navItems = [
   { name: "Conditioning of Matrix I", href: "/pointwise-conditioning", icon: ActivitySquare },
   { name: "Conditioning of Matrix II", href: "/conditioning-matrix-2", icon: ActivitySquare },
   { name: "Conditioning of LSE I", href: "/lse-stability", icon: ActivitySquare },
-  { name: "Conditioning of LSE II", href: "/lse-stability-2", icon: ActivitySquare },
+  { name: "Conditioning of LSE II (Under Construction)", href: "/lse-stability-2", icon: ActivitySquare },
   {
     name: "Four QRs",
     icon: Layers,

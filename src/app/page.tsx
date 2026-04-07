@@ -23,7 +23,7 @@ export default function Dashboard() {
       implemented: true,
     },
     {
-      title: "Conditioning of LSE II",
+      title: "Conditioning of LSE II (Under Construction)",
       description: "Sensitivity of the least squares solution to matrix perturbations.",
       href: "/lse-stability-2",
       implemented: true,

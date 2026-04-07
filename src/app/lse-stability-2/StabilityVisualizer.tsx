@@ -28,7 +28,12 @@ export default function StabilityVisualizer() {
       {/* Left Sidebar */}
       <div className="w-1/3 min-w-[320px] max-w-[400px] border-r bg-white p-6 overflow-y-auto flex flex-col shadow-sm z-10">
         <div className="mb-6">
-          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Conditioning of LSE II</h1>
+          <div className="flex items-center gap-2 mb-1">
+            <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Conditioning of LSE II</h1>
+          </div>
+          <div className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-amber-100 text-amber-800 mb-2">
+            Under Construction
+          </div>
           <p className="text-sm text-slate-500 mt-1">Sensitivity to matrix perturbations <InlineMath math="\delta A" /></p>
         </div>
 
@@ -151,13 +156,13 @@ export default function StabilityVisualizer() {
         {/* Overlay Metrics */}
         <div className="absolute top-6 right-6 flex flex-col gap-3 pointer-events-none">
           <div className="bg-white/90 backdrop-blur border border-slate-200 shadow-sm rounded-lg p-3 w-48 text-center">
-            <div className="text-[10px] uppercase font-semibold text-emerald-600 mb-1 tracking-wider">||ŷ||</div>
+            <div className="text-[10px] font-semibold text-emerald-600 mb-1 tracking-wider">||ŷ||</div>
             <div className="font-mono text-lg font-medium text-slate-800">
               {(1.0 / Math.sqrt((Math.cos(phiRad)*Math.cos(phiRad))/4.0 + (Math.sin(phiRad)*Math.sin(phiRad)))).toFixed(3)}
             </div>
           </div>
           <div className="bg-white/90 backdrop-blur border border-slate-200 shadow-sm rounded-lg p-3 w-48 text-center">
-            <div className="text-[10px] uppercase font-semibold text-slate-600 mb-1 tracking-wider">||r||</div>
+            <div className="text-[10px] font-semibold text-slate-600 mb-1 tracking-wider">||r||</div>
             <div className="font-mono text-lg font-medium text-slate-800">
               {((1.0 / Math.sqrt((Math.cos(phiRad)*Math.cos(phiRad))/4.0 + (Math.sin(phiRad)*Math.sin(phiRad)))) * Math.tan(thetaRad)).toFixed(3)}
             </div>
