@@ -53,8 +53,14 @@ export default function Dashboard() {
       implemented: true,
     },
     {
+      title: "SVD vs Eigenvalue",
+      description: "Comparing geometric perspectives of matrix decomposition.",
+      href: "/svd-vs-eigen",
+      implemented: true,
+    },
+    {
       title: "Other NLA Topics",
-      description: "Eigenvalue sensitivities, SVD, and Krylov subspace methods. (Coming soon)",
+      description: "Krylov subspace methods and more. (Coming soon)",
       href: "#",
       implemented: false,
     },
