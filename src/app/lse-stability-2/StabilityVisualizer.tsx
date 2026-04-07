@@ -7,7 +7,9 @@ import Scene3D from "./Scene3D";
 export default function StabilityVisualizer() {
   // Vector b controls
   const [thetaDeg, setThetaDeg] = useState(45);
-  const [phiDeg, setPhiDeg] = useState(45);
+
+  // Lock phi to 90 degrees (sigma_n, the worst-case direction)
+  const phiRad = Math.PI / 2;
 
   // Matrix perturbation controls
   const [deltaMinorRatio, setDeltaMinorRatio] = useState(0.4);
@@ -16,7 +18,6 @@ export default function StabilityVisualizer() {
   const epsilon = 0.3;
 
   const thetaRad = (thetaDeg * Math.PI) / 180;
-  const phiRad = (phiDeg * Math.PI) / 180;
 
   // LSE condition number for matrix perturbation is roughly proportional to ||r|| / cos(theta) ...
   // Actually kappa_{A->y} approx 1/cos(theta) + ||r||/cos(theta) ... wait, we visualize the geometry directly.
@@ -50,12 +51,11 @@ export default function StabilityVisualizer() {
           <section>
             <h2 className="text-sm font-semibold text-slate-700 uppercase tracking-wider mb-2">Core Idea</h2>
             <p className="text-sm text-slate-600 leading-relaxed mb-3">
-              We fix <InlineMath math="\mathbf{b}" /> and explore perturbations to the matrix: <InlineMath math="A \to A + \delta A" />.
+              We fix <InlineMath math="\mathbf{b}" /> along the minor axis <InlineMath math="\sigma_n" /> of <InlineMath math="A" /> to visualize the worst-case relative error.
             </p>
             <ul className="text-sm text-slate-600 space-y-1.5 list-disc pl-4 marker:text-slate-400">
-              <li>The most damaging perturbation <InlineMath math="\delta A" /> expands along the residual <InlineMath math="\mathbf{r} = \mathbf{b} - \mathbf{\hat{y}}" />.</li>
-              <li>This tilts the column space <InlineMath math="\text{Span}(A)" /> towards <InlineMath math="\mathbf{b}" />, drastically shifting the orthogonal projection <InlineMath math="\mathbf{\hat{y}}" /> to <InlineMath math="\mathbf{\hat{y}}'" />.</li>
-              <li>The solid yellow ellipse represents the perturbed column space.</li>
+              <li>No matter how the column space is tilted, the line <InlineMath math="\mathbf{b} - \mathbf{\hat{y}}'" /> remains at a right angle to <InlineMath math="0 - \mathbf{\hat{y}}'" />.</li>
+              <li>Therefore, as <InlineMath math="\text{Span}(A)" /> is tilted towards <InlineMath math="\mathbf{b}" />, <InlineMath math="\mathbf{\hat{y}}'" /> moves strictly along a sphere of radius <InlineMath math="\|\mathbf{b}\|/2" /> centered at <InlineMath math="\mathbf{b}/2" />.</li>
             </ul>
           </section>
 
@@ -83,33 +83,6 @@ export default function StabilityVisualizer() {
                 />
               </div>
 
-              {/* Phi Control */}
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <label className="text-sm font-medium text-slate-700 flex items-center gap-2">
-                    <span className="font-mono text-xs">φ</span>
-                    Rotation
-                  </label>
-                  <span className="text-sm font-mono text-slate-500 bg-slate-100 px-2 py-0.5 rounded">{phiDeg}°</span>
-                </div>
-                <input
-                  type="range"
-                  min="0"
-                  max="360"
-                  step="1"
-                  value={phiDeg}
-                  onChange={(e) => setPhiDeg(parseFloat(e.target.value))}
-                  className="w-full accent-slate-800"
-                />
-                <div className="pt-1 flex gap-2">
-                  <button
-                    onClick={() => setPhiDeg(90)}
-                    className="flex-1 py-1.5 px-3 bg-red-50 hover:bg-red-100 text-red-700 text-xs font-medium rounded-md border border-red-200 transition-colors shadow-sm"
-                  >
-                    Worst-Case Direction
-                  </button>
-                </div>
-              </div>
 
               {/* Sigma_2(delta A) Control */}
               <div className="space-y-3 pt-2">
@@ -156,13 +129,13 @@ export default function StabilityVisualizer() {
         {/* Overlay Metrics */}
         <div className="absolute top-6 right-6 flex flex-col gap-3 pointer-events-none">
           <div className="bg-white/90 backdrop-blur border border-slate-200 shadow-sm rounded-lg p-3 w-48 text-center">
-            <div className="text-[10px] font-semibold text-emerald-600 mb-1 tracking-wider">||ŷ||</div>
+            <div className="text-[10px] uppercase font-semibold text-emerald-600 mb-1 tracking-wider">||ŷ||</div>
             <div className="font-mono text-lg font-medium text-slate-800">
               {(1.0 / Math.sqrt((Math.cos(phiRad)*Math.cos(phiRad))/4.0 + (Math.sin(phiRad)*Math.sin(phiRad)))).toFixed(3)}
             </div>
           </div>
           <div className="bg-white/90 backdrop-blur border border-slate-200 shadow-sm rounded-lg p-3 w-48 text-center">
-            <div className="text-[10px] font-semibold text-slate-600 mb-1 tracking-wider">||r||</div>
+            <div className="text-[10px] uppercase font-semibold text-slate-600 mb-1 tracking-wider">||r||</div>
             <div className="font-mono text-lg font-medium text-slate-800">
               {((1.0 / Math.sqrt((Math.cos(phiRad)*Math.cos(phiRad))/4.0 + (Math.sin(phiRad)*Math.sin(phiRad)))) * Math.tan(thetaRad)).toFixed(3)}
             </div>
