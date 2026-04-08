@@ -2,7 +2,7 @@
 
 import React, { useMemo } from "react";
 import { Canvas } from "@react-three/fiber";
-import { Line, Html, OrthographicCamera, Grid } from "@react-three/drei";
+import { Line, Html, OrthographicCamera, Grid, OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
 
 interface Scene2DProps {
@@ -18,7 +18,7 @@ const VectorArrow2D = ({ start, end, color, label, showLabel = true, labelOffset
 
   const normalizedDir = dir.clone().normalize();
   const hex = new THREE.Color(color).getHex();
-  const labelPos = end.clone().add(normalizedDir.clone().multiplyScalar(labelOffset));
+  const labelPos = end.clone().add(normalizedDir.clone().multiplyScalar(labelOffset + 0.2));
 
   return (
     <group>
@@ -27,7 +27,7 @@ const VectorArrow2D = ({ start, end, color, label, showLabel = true, labelOffset
       ) : (
         <arrowHelper args={[normalizedDir, start, length, hex, Math.min(0.2, length * 0.2), Math.min(0.1, length * 0.1)]} />
       )}
-      {showLabel && (
+      {showLabel && label !== "" && (
         <Html position={labelPos} center style={{ pointerEvents: 'none' }}>
           <div className="font-mono text-sm font-bold px-1 py-0.5 rounded bg-white/80 backdrop-blur-sm border border-slate-200 shadow-sm whitespace-nowrap" style={{ color }}>
             {label}
@@ -118,6 +118,7 @@ export default function Scene2D({ viewMode, angleRad }: Scene2DProps) {
   return (
     <Canvas>
       <OrthographicCamera makeDefault position={[0, 0, 10]} zoom={80} near={0.1} far={100} />
+      <OrbitControls enableRotate={false} enablePan={true} enableZoom={true} />
       <color attach="background" args={["#f8fafc"]} />
 
       {viewMode === "eigen" && (
@@ -135,10 +136,6 @@ export default function Scene2D({ viewMode, angleRad }: Scene2DProps) {
           {/* Basis Vectors */}
           <VectorArrow2D start={new THREE.Vector3(0,0,0)} end={p1} color="#ef4444" label="p₁" />
           <VectorArrow2D start={new THREE.Vector3(0,0,0)} end={p2} color="#ef4444" label="p₂" />
-
-          {/* Transformed Basis Vectors */}
-          <VectorArrow2D start={new THREE.Vector3(0,0,0)} end={p1.clone().multiplyScalar(lambda1)} color="#991b1b" label="λ₁p₁" />
-          <VectorArrow2D start={new THREE.Vector3(0,0,0)} end={p2.clone().multiplyScalar(lambda2)} color="#991b1b" label="λ₂p₂" />
 
           {/* x vector decomposed */}
           <VectorArrow2D start={new THREE.Vector3(0,0,0)} end={c1p1} color="#9ca3af" label="" dashed />
