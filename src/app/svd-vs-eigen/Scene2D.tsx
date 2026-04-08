@@ -143,11 +143,15 @@ export default function Scene2D({ viewMode, angleRad }: Scene2DProps) {
           {/* x vector decomposed */}
           <VectorArrow2D start={new THREE.Vector3(0,0,0)} end={c1p1} color="#9ca3af" label="" dashed />
           <VectorArrow2D start={c1p1} end={x} color="#9ca3af" label="" dashed />
+          <VectorArrow2D start={new THREE.Vector3(0,0,0)} end={c2p2} color="#9ca3af" label="" dashed />
+          <VectorArrow2D start={c2p2} end={x} color="#9ca3af" label="" dashed />
           <VectorArrow2D start={new THREE.Vector3(0,0,0)} end={x} color="#64748b" label="x" />
 
           {/* Ax vector decomposed */}
           <VectorArrow2D start={new THREE.Vector3(0,0,0)} end={L1c1p1} color="#fbbf24" label="" dashed />
           <VectorArrow2D start={L1c1p1} end={ax} color="#fbbf24" label="" dashed />
+          <VectorArrow2D start={new THREE.Vector3(0,0,0)} end={L2c2p2} color="#fbbf24" label="" dashed />
+          <VectorArrow2D start={L2c2p2} end={ax} color="#fbbf24" label="" dashed />
           <VectorArrow2D start={new THREE.Vector3(0,0,0)} end={ax} color="#eab308" label="Ax" />
         </group>
       )}
