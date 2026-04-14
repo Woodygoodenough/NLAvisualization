@@ -13,6 +13,14 @@ const navItems = [
   { name: "Conditioning of LSE I", href: "/lse-stability", icon: ActivitySquare },
   { name: "Conditioning of LSE II (Under Construction)", href: "/lse-stability-2", icon: ActivitySquare },
   {
+    name: "Basics",
+    icon: Layers,
+    children: [
+      { name: "SVD vs Eigenvalue", href: "/svd-vs-eigen", disabled: false },
+      { name: "SVD Computation", href: "/svd-computation", disabled: false },
+    ]
+  },
+  {
     name: "Four QRs",
     icon: Layers,
     children: [
@@ -22,7 +30,6 @@ const navItems = [
       { name: "Givens", href: "/four-qrs/givens", disabled: false },
     ]
   },
-  { name: "SVD vs Eigenvalue", href: "/svd-vs-eigen", icon: Compass },
   { name: "Other NLA Topics (coming soon)", href: "#", icon: Compass, disabled: true },
 ];
 
@@ -30,6 +37,7 @@ export function Sidebar() {
   const pathname = usePathname();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>({
+    "Basics": true,
     "Four QRs": true
   });
 
