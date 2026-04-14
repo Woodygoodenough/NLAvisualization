@@ -59,6 +59,12 @@ export default function Dashboard() {
       implemented: true,
     },
     {
+      title: "SVD Computation",
+      description: "Elementwise view of how the SVD constructs a transformed vector.",
+      href: "/svd-computation",
+      implemented: true,
+    },
+    {
       title: "Other NLA Topics",
       description: "Krylov subspace methods and more. (Coming soon)",
       href: "#",
