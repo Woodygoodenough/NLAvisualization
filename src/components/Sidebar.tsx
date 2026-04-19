@@ -21,6 +21,13 @@ const navItems = [
     ]
   },
   {
+    name: "Iterative Solver",
+    icon: Layers,
+    children: [
+      { name: "Eigen Solver", href: "/eigen-solver", disabled: false },
+    ]
+  },
+  {
     name: "Four QRs",
     icon: Layers,
     children: [
