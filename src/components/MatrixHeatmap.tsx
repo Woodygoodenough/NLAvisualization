@@ -6,10 +6,11 @@ import { cn } from "@/lib/utils";
 interface MatrixHeatmapProps {
   matrix: number[][];
   highlights: number[][];
+  bulge?: number[]; // [row, col]
   eigenvalues?: string[];
 }
 
-export default function MatrixHeatmap({ matrix, highlights, eigenvalues }: MatrixHeatmapProps) {
+export default function MatrixHeatmap({ matrix, highlights, bulge, eigenvalues }: MatrixHeatmapProps) {
   const n = matrix.length;
 
   // Flatten to find max magnitude for color scaling
@@ -52,6 +53,10 @@ export default function MatrixHeatmap({ matrix, highlights, eigenvalues }: Matri
     return highlights.some(h => h[0] === r && h[1] === c);
   };
 
+  const isBulge = (r: number, c: number) => {
+    return bulge && bulge[0] === r && bulge[1] === c;
+  };
+
   return (
     <div className="flex flex-col items-center gap-8">
       <div
@@ -64,7 +69,8 @@ export default function MatrixHeatmap({ matrix, highlights, eigenvalues }: Matri
               key={`${r}-${c}`}
               className={cn(
                 "w-12 h-12 flex items-center justify-center text-[10px] font-mono rounded transition-all duration-300",
-                isHighlighted(r, c) ? "ring-2 ring-amber-500 ring-offset-1 z-10 scale-105 shadow-sm" : ""
+                isHighlighted(r, c) ? "ring-2 ring-amber-500 ring-offset-1 z-10 scale-105 shadow-sm" : "",
+                isBulge(r, c) ? "ring-[3px] ring-red-500 ring-offset-2 z-20 scale-110 shadow-md" : ""
               )}
               style={{
                 backgroundColor: getColor(val),
