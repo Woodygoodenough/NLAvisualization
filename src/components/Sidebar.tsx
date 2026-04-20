@@ -24,6 +24,7 @@ const navItems = [
     name: "Iterative Solver",
     icon: Layers,
     children: [
+      { name: "Bulge Chasing", href: "/bulge-chasing", disabled: false },
       { name: "Eigen Solver", href: "/eigen-solver", disabled: false },
     ]
   },
