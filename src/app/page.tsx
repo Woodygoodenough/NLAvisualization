@@ -65,6 +65,18 @@ export default function Dashboard() {
       implemented: true,
     },
     {
+      title: "Eigenvalues Solver",
+      description: "Full end-to-end QR iteration algorithm for finding eigenvalues.",
+      href: "/eigen-solver",
+      implemented: true,
+    },
+    {
+      title: "Bulge Chasing",
+      description: "Step-by-step implicit QR iteration tracking the matrix bulge.",
+      href: "/bulge-chasing",
+      implemented: true,
+    },
+    {
       title: "Other NLA Topics",
       description: "Krylov subspace methods and more. (Coming soon)",
       href: "#",
