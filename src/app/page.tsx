@@ -77,6 +77,12 @@ export default function Dashboard() {
       implemented: true,
     },
     {
+      title: "Batch Rotations",
+      description: "Step-by-step explicit QR iteration forming R and RQ.",
+      href: "/batch-rotations",
+      implemented: true,
+    },
+    {
       title: "Other NLA Topics",
       description: "Krylov subspace methods and more. (Coming soon)",
       href: "#",
