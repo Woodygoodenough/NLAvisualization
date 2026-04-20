@@ -37,6 +37,17 @@ export default function MatrixHeatmap({ matrix, highlights, eigenvalues }: Matri
     }
   };
 
+  const formatNumber = (val: number) => {
+    if (Math.abs(val) < 1e-10) return "0";
+    // Use scientific notation if the absolute value is very large or very small,
+    // otherwise use fixed precision.
+    const absVal = Math.abs(val);
+    if (absVal >= 10000 || (absVal < 0.01 && absVal > 1e-10)) {
+        return val.toExponential(1);
+    }
+    return val.toFixed(2);
+  };
+
   const isHighlighted = (r: number, c: number) => {
     return highlights.some(h => h[0] === r && h[1] === c);
   };
@@ -60,8 +71,9 @@ export default function MatrixHeatmap({ matrix, highlights, eigenvalues }: Matri
                 color: Math.abs(val) > 1e-10 ? "rgb(15, 23, 42)" : "rgb(148, 163, 184)", // Dark text for non-zero, light for zero
                 fontWeight: Math.abs(val) > 1e-10 ? 600 : 400
               }}
+              title={val.toString()}
             >
-              {Math.abs(val) < 1e-10 ? "0" : val.toFixed(2)}
+              <span className="truncate px-1">{formatNumber(val)}</span>
             </div>
           ))
         )}
