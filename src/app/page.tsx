@@ -83,6 +83,12 @@ export default function Dashboard() {
       implemented: true,
     },
     {
+      title: "Implicit Q Theorem",
+      description: "Visualizing why Bulge Chasing is equivalent to Explicit QR.",
+      href: "/implicit-q-theorem",
+      implemented: true,
+    },
+    {
       title: "Other NLA Topics",
       description: "Krylov subspace methods and more. (Coming soon)",
       href: "#",
