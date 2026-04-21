@@ -26,6 +26,7 @@ const navItems = [
     children: [
       { name: "Bulge Chasing", href: "/bulge-chasing", disabled: false },
       { name: "Batch Rotations", href: "/batch-rotations", disabled: false },
+      { name: "Implicit Q Theorem", href: "/implicit-q-theorem", disabled: false },
       { name: "Eigen Solver", href: "/eigen-solver", disabled: false },
     ]
   },
