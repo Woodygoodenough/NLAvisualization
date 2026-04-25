@@ -28,6 +28,7 @@ const navItems = [
       { name: "Batch Rotations", href: "/batch-rotations", disabled: false },
       { name: "Implicit Q Theorem", href: "/implicit-q-theorem", disabled: false },
       { name: "Eigen Solver", href: "/eigen-solver", disabled: false },
+      { name: "Arnoldi Iteration", href: "/arnoldi-iteration", disabled: false },
     ]
   },
   {

@@ -89,6 +89,12 @@ export default function Dashboard() {
       implemented: true,
     },
     {
+      title: "Arnoldi Iteration",
+      description: "Visualizing the expansion of the Krylov subspace block by block.",
+      href: "/arnoldi-iteration",
+      implemented: true,
+    },
+    {
       title: "Other NLA Topics",
       description: "Krylov subspace methods and more. (Coming soon)",
       href: "#",
