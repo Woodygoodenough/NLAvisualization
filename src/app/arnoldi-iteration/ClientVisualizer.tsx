@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import MatrixRaw from "@/components/MatrixRaw";
+import { InlineMath } from "react-katex";
 
 export default function ClientVisualizer({ data }: { data: any }) {
   const [stepIdx, setStepIdx] = useState(0);
@@ -42,7 +43,9 @@ export default function ClientVisualizer({ data }: { data: any }) {
 
         {/* Math Equation */}
         <div className="bg-slate-50 border border-slate-200 rounded-lg p-4 mb-8 text-center">
-          <span className="font-mono text-lg text-slate-800">A Q_k = Q_{"{k+1}"} H_k</span>
+          <span className="text-lg text-slate-800">
+            <InlineMath math="A Q_k = Q_{k+1} H_k" />
+          </span>
         </div>
 
         {/* Step Controls */}
@@ -93,16 +96,27 @@ export default function ClientVisualizer({ data }: { data: any }) {
       </div>
 
       {/* Right Content */}
-      <div className="flex-1 relative bg-slate-50 flex flex-col items-center justify-center p-8 overflow-x-auto">
+      <div className="flex-1 relative bg-slate-50 flex flex-col items-center justify-center p-8 overflow-y-auto">
 
-        <div className="flex items-center gap-6 transform scale-90 lg:scale-100">
-          <MatrixRaw matrix={currentStep.A} label="A" />
-          <div className="text-2xl text-slate-400">×</div>
-          <MatrixRaw matrix={currentStep.Q_k} label="Q_k" />
-          <div className="text-2xl text-slate-400 mx-4">=</div>
-          <MatrixRaw matrix={currentStep.Q_k1} label="Q_{k+1}" />
-          <div className="text-2xl text-slate-400">×</div>
-          <MatrixRaw matrix={currentStep.H_k} label="H_k" />
+        <div className="flex flex-col items-center gap-6 transform scale-90 lg:scale-100">
+
+          {/* Top Row: A * Q_k */}
+          <div className="flex items-center gap-6">
+            <MatrixRaw matrix={currentStep.A} label="A" />
+            <div className="text-2xl text-slate-400">×</div>
+            <MatrixRaw matrix={currentStep.Q_k} label="Q_k" />
+          </div>
+
+          {/* Equals Sign */}
+          <div className="text-4xl text-slate-400 my-2">=</div>
+
+          {/* Bottom Row: Q_{k+1} * H_k */}
+          <div className="flex items-center gap-6">
+            <MatrixRaw matrix={currentStep.Q_k1} label="Q_{k+1}" />
+            <div className="text-2xl text-slate-400">×</div>
+            <MatrixRaw matrix={currentStep.H_k} label="H_k" />
+          </div>
+
         </div>
 
       </div>
