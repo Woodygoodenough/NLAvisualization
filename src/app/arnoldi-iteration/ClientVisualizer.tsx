@@ -44,7 +44,7 @@ export default function ClientVisualizer({ data }: { data: any }) {
         {/* Math Equation */}
         <div className="bg-slate-50 border border-slate-200 rounded-lg p-4 mb-8 text-center">
           <span className="text-lg text-slate-800">
-            <InlineMath math="A Q_k = Q_{k+1} H_k" />
+            <InlineMath math="A Q_k = Q_{k+1} \tilde{H}_k" />
           </span>
         </div>
 
@@ -102,19 +102,23 @@ export default function ClientVisualizer({ data }: { data: any }) {
 
           {/* Top Row: A * Q_k */}
           <div className="flex items-center gap-6">
-            <MatrixRaw matrix={currentStep.A} label="A" />
+            <MatrixRaw matrix={currentStep.A} label={<InlineMath math="A" />} />
             <div className="text-2xl text-slate-400">×</div>
-            <MatrixRaw matrix={currentStep.Q_k} label="Q_k" />
+            <MatrixRaw matrix={currentStep.Q_k} label={<InlineMath math="Q_k" />} />
           </div>
 
           {/* Equals Sign */}
           <div className="text-4xl text-slate-400 my-2">=</div>
 
-          {/* Bottom Row: Q_{k+1} * H_k */}
+          {/* Bottom Row: Q_{k+1} * \tilde{H}_k */}
           <div className="flex items-center gap-6">
-            <MatrixRaw matrix={currentStep.Q_k1} label="Q_{k+1}" />
+            <MatrixRaw matrix={currentStep.Q_k1} label={<InlineMath math="Q_{k+1}" />} />
             <div className="text-2xl text-slate-400">×</div>
-            <MatrixRaw matrix={currentStep.H_k} label="H_k" />
+            <MatrixRaw
+              matrix={currentStep.H_k}
+              label={<InlineMath math="\tilde{H}_k" />}
+              highlightBlock={{ rows: currentStep.k, cols: currentStep.k, label: "H_k" }}
+            />
           </div>
 
         </div>
