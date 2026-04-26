@@ -31,11 +31,11 @@ export default function MatrixRaw({ matrix, className, label, highlightBlock }: 
               style={{
                 // calculation:
                 // gap is 0.5rem (8px), padding-top/bottom is 0.5rem, padding-left is 0.25rem
-                // cell height is 2rem (32px), cell width is 3rem (48px)
+                // cell height is 2.75rem (44px), cell width is 2.75rem (44px)
                 top: "0.5rem", // py-2
                 left: "0.25rem", // px-1
-                width: `calc(${highlightBlock.cols} * 3rem + ${Math.max(0, highlightBlock.cols - 1)} * 0.5rem)`,
-                height: `calc(${highlightBlock.rows} * 2rem + ${Math.max(0, highlightBlock.rows - 1)} * 0.5rem)`,
+                width: `calc(${highlightBlock.cols} * 2.75rem + ${Math.max(0, highlightBlock.cols - 1)} * 0.5rem)`,
+                height: `calc(${highlightBlock.rows} * 2.75rem + ${Math.max(0, highlightBlock.rows - 1)} * 0.5rem)`,
               }}
             >
               {highlightBlock.label && (
@@ -50,7 +50,7 @@ export default function MatrixRaw({ matrix, className, label, highlightBlock }: 
               <div
                 key={`${i}-${j}`}
                 className={cn(
-                  "flex items-center justify-center w-12 h-8 text-sm font-mono shrink-0 transition-all duration-300 whitespace-nowrap overflow-hidden",
+                  "flex items-center justify-center w-11 h-11 text-sm font-mono shrink-0 transition-all duration-300 whitespace-nowrap overflow-hidden",
                   val === null ? "opacity-0" : "text-slate-800 bg-slate-50 border border-slate-200 rounded shadow-sm"
                 )}
               >
