@@ -95,6 +95,12 @@ export default function Dashboard() {
       implemented: true,
     },
     {
+      title: "Cholesky Stability",
+      description: "Visualizing why Cholesky Factorization on SPD matrices doesn't need pivoting.",
+      href: "/cholesky/stability",
+      implemented: true,
+    },
+    {
       title: "Other NLA Topics",
       description: "Krylov subspace methods and more. (Coming soon)",
       href: "#",

@@ -32,6 +32,13 @@ const navItems = [
     ]
   },
   {
+    name: "Cholesky",
+    icon: Layers,
+    children: [
+      { name: "Stability (No Pivoting)", href: "/cholesky/stability", disabled: false },
+    ]
+  },
+  {
     name: "Four QRs",
     icon: Layers,
     children: [
