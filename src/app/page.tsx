@@ -95,6 +95,12 @@ export default function Dashboard() {
       implemented: true,
     },
     {
+      title: "Conjugate Gradient",
+      description: "Visualizing why CG finishes in n steps while GD zig-zags on an SPD matrix.",
+      href: "/conjugate-gradient",
+      implemented: true,
+    },
+    {
       title: "Cholesky Stability",
       description: "Visualizing why Cholesky Factorization on SPD matrices doesn't need pivoting.",
       href: "/cholesky/stability",
