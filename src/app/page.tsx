@@ -95,6 +95,12 @@ export default function Dashboard() {
       implemented: true,
     },
     {
+      title: "Power Iteration",
+      description: "Visualizing how a vector converges to the dominant eigenvector.",
+      href: "/power-iteration",
+      implemented: true,
+    },
+    {
       title: "Conjugate Gradient",
       description: "Visualizing why CG finishes in n steps while GD zig-zags on an SPD matrix.",
       href: "/conjugate-gradient",
