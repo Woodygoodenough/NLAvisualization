@@ -29,6 +29,14 @@ const navItems = [
       { name: "Implicit Q Theorem", href: "/implicit-q-theorem", disabled: false },
       { name: "Eigen Solver", href: "/eigen-solver", disabled: false },
       { name: "Arnoldi Iteration", href: "/arnoldi-iteration", disabled: false },
+      { name: "Conjugate Gradient", href: "/conjugate-gradient", disabled: false },
+    ]
+  },
+  {
+    name: "Cholesky",
+    icon: Layers,
+    children: [
+      { name: "Stability (No Pivoting)", href: "/cholesky/stability", disabled: false },
     ]
   },
   {
