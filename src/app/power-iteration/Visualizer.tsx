@@ -141,6 +141,19 @@ export default function Visualizer() {
                 />
               </div>
 
+              {(angleDeg === 135 || angleDeg === 315) && (
+                <div className="bg-orange-50 border border-orange-200 rounded-md p-3">
+                  <div className="text-xs font-semibold text-orange-800 uppercase tracking-wider mb-1 flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></span>
+                    Unstable Equilibrium
+                  </div>
+                  <p className="text-xs text-orange-700 leading-relaxed">
+                    The vector is perfectly aligned with the weaker eigenvector <InlineMath math="p_2" />.
+                    Staying on this path is <strong>numerically impossible</strong> in real computing due to floating-point errors, but we enforce it here for demonstration.
+                  </p>
+                </div>
+              )}
+
               <div className="flex items-center justify-between mt-6">
                 <div className="text-sm font-semibold text-slate-700">
                   Iteration: {iteration}
