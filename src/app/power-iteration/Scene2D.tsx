@@ -4,6 +4,7 @@ import React, { useMemo } from "react";
 import { Canvas } from "@react-three/fiber";
 import { Line, Html, OrthographicCamera, Grid, OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
+import { InlineMath } from "react-katex";
 
 interface Scene2DProps {
   currentVec: [number, number];
@@ -84,7 +85,20 @@ export default function Scene2D({ currentVec, subStep, iteration, angleDeg }: Sc
   const c2p2_ax = p2.clone().multiplyScalar(c2_ax);
 
   return (
-    <Canvas>
+    <div className="w-full h-full relative">
+      {(angleDeg === 135 || angleDeg === 315) && (
+        <div className="absolute top-6 left-1/2 -translate-x-1/2 z-10 w-[400px] shadow-md bg-orange-50/95 backdrop-blur-sm border border-orange-200 rounded-md p-3">
+          <div className="text-xs font-semibold text-orange-800 uppercase tracking-wider mb-1 flex items-center gap-1.5">
+            <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></span>
+            Unstable Equilibrium
+          </div>
+          <p className="text-xs text-orange-700 leading-relaxed">
+            The vector is perfectly aligned with the weaker eigenvector <InlineMath math="p_2" />.
+            Staying on this path is <strong>numerically impossible</strong> in real computing due to floating-point errors, but we enforce it here for demonstration.
+          </p>
+        </div>
+      )}
+      <Canvas>
       <OrthographicCamera makeDefault position={[0, 0, 10]} zoom={80} near={0.1} far={100} />
       <OrbitControls enableRotate={false} enablePan={true} enableZoom={true} />
       <color attach="background" args={["#f8fafc"]} />
@@ -128,5 +142,6 @@ export default function Scene2D({ currentVec, subStep, iteration, angleDeg }: Sc
         )}
       </group>
     </Canvas>
+    </div>
   );
 }
