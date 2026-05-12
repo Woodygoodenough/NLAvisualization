@@ -13,7 +13,7 @@ interface Scene2DProps {
   angleDeg: number;
 }
 
-const VectorArrow2D = ({ start, end, color, label, showLabel = true, labelOffset = 0.05, dashed = false, lineWidth = 2 }: { start: THREE.Vector3, end: THREE.Vector3, color: string, label: string, showLabel?: boolean, labelOffset?: number, dashed?: boolean, lineWidth?: number }) => {
+const VectorArrow2D = ({ start, end, color, mathLabel, showLabel = true, labelOffset = 0.3, dashed = false, lineWidth = 2 }: { start: THREE.Vector3, end: THREE.Vector3, color: string, mathLabel?: string, showLabel?: boolean, labelOffset?: number, dashed?: boolean, lineWidth?: number }) => {
   const dir = new THREE.Vector3().subVectors(end, start);
   const length = dir.length();
 
@@ -21,7 +21,7 @@ const VectorArrow2D = ({ start, end, color, label, showLabel = true, labelOffset
 
   const normalizedDir = dir.clone().normalize();
   const hex = new THREE.Color(color).getHex();
-  const labelPos = end.clone().add(normalizedDir.clone().multiplyScalar(labelOffset + 0.2));
+  const labelPos = end.clone().add(normalizedDir.clone().multiplyScalar(labelOffset));
 
   return (
     <group>
@@ -30,10 +30,10 @@ const VectorArrow2D = ({ start, end, color, label, showLabel = true, labelOffset
       ) : (
         <arrowHelper args={[normalizedDir, start, length, hex, Math.min(0.2, length * 0.2), Math.min(0.1, length * 0.1)]} />
       )}
-      {showLabel && label !== "" && (
+      {showLabel && mathLabel && (
         <Html position={labelPos} center style={{ pointerEvents: 'none' }}>
-          <div className="font-mono text-sm font-bold px-1 py-0.5 rounded bg-white/80 backdrop-blur-sm border border-slate-200 shadow-sm whitespace-nowrap" style={{ color }}>
-            {label}
+          <div className="text-sm font-bold px-1.5 py-0.5 rounded bg-white/80 backdrop-blur-sm border border-slate-200 shadow-sm whitespace-nowrap" style={{ color }}>
+            <InlineMath math={mathLabel} />
           </div>
         </Html>
       )}
@@ -120,24 +120,24 @@ export default function Scene2D({ currentVec, subStep, iteration, angleDeg }: Sc
         />
 
         {/* Basis Vectors */}
-        <VectorArrow2D start={new THREE.Vector3(0,0,0)} end={p1} color="#ef4444" label="p₁" />
-        <VectorArrow2D start={new THREE.Vector3(0,0,0)} end={p2} color="#ef4444" label="p₂" />
+        <VectorArrow2D start={new THREE.Vector3(0,0,0)} end={p1} color="#ef4444" mathLabel="p_1" />
+        <VectorArrow2D start={new THREE.Vector3(0,0,0)} end={p2} color="#ef4444" mathLabel="p_2" />
 
         {/* Show current vector x_k */}
-        <VectorArrow2D start={new THREE.Vector3(0,0,0)} end={c1p1_x} color="#9ca3af" label="" dashed />
-        <VectorArrow2D start={c1p1_x} end={xVec} color="#9ca3af" label="" dashed />
-        <VectorArrow2D start={new THREE.Vector3(0,0,0)} end={c2p2_x} color="#9ca3af" label="" dashed />
-        <VectorArrow2D start={c2p2_x} end={xVec} color="#9ca3af" label="" dashed />
-        <VectorArrow2D start={new THREE.Vector3(0,0,0)} end={xVec} color="#64748b" label={`x${iteration > 0 ? `_${iteration}` : '_0'}`} />
+        <VectorArrow2D start={new THREE.Vector3(0,0,0)} end={c1p1_x} color="#9ca3af"  dashed />
+        <VectorArrow2D start={c1p1_x} end={xVec} color="#9ca3af"  dashed />
+        <VectorArrow2D start={new THREE.Vector3(0,0,0)} end={c2p2_x} color="#9ca3af"  dashed />
+        <VectorArrow2D start={c2p2_x} end={xVec} color="#9ca3af"  dashed />
+        <VectorArrow2D start={new THREE.Vector3(0,0,0)} end={xVec} color="#64748b" mathLabel={`x_{${iteration > 0 ? iteration : "0"}}`} />
 
         {/* Show Ax_k if in Ax substep */}
         {subStep === "Ax" && (
           <>
-            <VectorArrow2D start={new THREE.Vector3(0,0,0)} end={c1p1_ax} color="#fbbf24" label="" dashed />
-            <VectorArrow2D start={c1p1_ax} end={axVec} color="#fbbf24" label="" dashed />
-            <VectorArrow2D start={new THREE.Vector3(0,0,0)} end={c2p2_ax} color="#fbbf24" label="" dashed />
-            <VectorArrow2D start={c2p2_ax} end={axVec} color="#fbbf24" label="" dashed />
-            <VectorArrow2D start={new THREE.Vector3(0,0,0)} end={axVec} color="#eab308" label={`Ax${iteration > 0 ? `_${iteration}` : '_0'}`} />
+            <VectorArrow2D start={new THREE.Vector3(0,0,0)} end={c1p1_ax} color="#fbbf24"  dashed />
+            <VectorArrow2D start={c1p1_ax} end={axVec} color="#fbbf24"  dashed />
+            <VectorArrow2D start={new THREE.Vector3(0,0,0)} end={c2p2_ax} color="#fbbf24"  dashed />
+            <VectorArrow2D start={c2p2_ax} end={axVec} color="#fbbf24"  dashed />
+            <VectorArrow2D start={new THREE.Vector3(0,0,0)} end={axVec} color="#eab308" mathLabel={`Ax_{${iteration > 0 ? iteration : "0"}}`} />
           </>
         )}
       </group>
