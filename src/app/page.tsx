@@ -98,7 +98,7 @@ export default function Dashboard() {
         },
         {
           title: "3. Stationary Iterative Methods",
-          description: "Visualizing the iterative process and error decay in solving Ax=b using matrix splitting.",
+          description: <span>Visualizing the iterative process and error decay in solving <InlineMath math="A\\mathbf{x}=\\mathbf{b}"/> using matrix splitting.</span>,
           href: "/stationary-iteration",
           implemented: true,
         },

@@ -42,7 +42,7 @@ const navItems = [
     icon: Layers,
     children: [
       { name: "1. Power Iteration — Dominant Eigenvector", href: "/power-iteration", disabled: false },
-      { name: "2. Power Iteration — Spectral Decay", titleNode: <span>2. Power Iteration — Spectral Decay (<InlineMath math="\rho(A)<1"/>)</span>, href: "/power-iteration-decay", disabled: false },
+      { name: "2. Power Iteration — Spectral Decay", titleNode: <span>2. Power Iteration — Spectral Decay (<InlineMath math="\\rho(A)<1"/>)</span>, href: "/power-iteration-decay", disabled: false },
       { name: "3. Stationary Iterative Methods", href: "/stationary-iteration", disabled: false },
       { name: "4. Arnoldi Iteration", href: "/arnoldi-iteration", disabled: false },
       { name: "5. Conjugate Gradient", href: "/conjugate-gradient", disabled: false },

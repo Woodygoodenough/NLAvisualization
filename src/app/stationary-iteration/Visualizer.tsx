@@ -5,7 +5,7 @@ import { BlockMath, InlineMath } from "react-katex";
 import Scene2D from "./Scene2D";
 
 export default function Visualizer() {
-  const [angleDeg, setAngleDeg] = useState(45);
+  const [angleDeg, setAngleDeg] = useState(135);
   const [hasStarted, setHasStarted] = useState(false);
   const [iteration, setIteration] = useState(0);
 
@@ -77,13 +77,13 @@ export default function Visualizer() {
           <section>
             <h2 className="text-sm font-semibold text-slate-700 uppercase tracking-wider mb-3">Formulation</h2>
             <div className="text-sm overflow-x-auto space-y-2">
-              <p className="text-slate-600 text-xs">To solve <InlineMath math="A\mathbf{x} = \mathbf{b}" />, we split <InlineMath math="A = M - N" />.</p>
-              <BlockMath math="\mathbf{x} = M^{-1}N\mathbf{x} + M^{-1}\mathbf{b}" />
-              <BlockMath math="\mathbf{x}^{(k)} = M^{-1}N\mathbf{x}^{(k-1)} + M^{-1}\mathbf{b}" />
+              <p className="text-slate-600 text-xs">To solve <InlineMath math="A\\mathbf{x} = \\mathbf{b}" />, we split <InlineMath math="A = M - N" />.</p>
+              <BlockMath math="\\mathbf{x} = M^{-1}N\\mathbf{x} + M^{-1}\\mathbf{b}" />
+              <BlockMath math="\\mathbf{x}^{(k)} = M^{-1}N\\mathbf{x}^{(k-1)} + M^{-1}\\mathbf{b}" />
               <p className="text-slate-600 mt-2 text-xs leading-relaxed">
-                We define the iteration matrix <InlineMath math="G = M^{-1}N" />. The error <InlineMath math="\mathbf{e}^{(k)} = \mathbf{x}^{(k)} - \mathbf{x}" /> follows the simple recurrence:
+                We define the iteration matrix <InlineMath math="G = M^{-1}N" />. The error <InlineMath math="\\mathbf{e}^{(k)} = \\mathbf{x}^{(k)} - \\mathbf{x}" /> follows the simple recurrence:
               </p>
-              <BlockMath math="\mathbf{e}^{(k)} = G \mathbf{e}^{(k-1)}" />
+              <BlockMath math="\\mathbf{e}^{(k)} = G \\mathbf{e}^{(k-1)}" />
             </div>
           </section>
 
@@ -94,10 +94,15 @@ export default function Visualizer() {
               <p className="text-xs text-slate-500 mt-2 text-center">Spectral Radius: <InlineMath math="\rho(G) = 0.8 < 1" /></p>
             </div>
 
-            <ul className="text-sm text-slate-600 space-y-1.5 list-disc pl-4 marker:text-slate-400">
-              <li>Even though <InlineMath math="\rho(G) < 1" />, the highly non-normal matrix <InlineMath math="G" /> causes the error norm to <strong>oscillate</strong> and even grow initially before eventually decaying.</li>
-              <li>The two eigenvectors of <InlineMath math="G" /> are highly skewed (non-orthogonal).</li>
-            </ul>
+            <div className="bg-blue-50 border border-blue-200 rounded-md p-3">
+              <div className="text-xs font-semibold text-blue-800 uppercase tracking-wider mb-1 flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-blue-500"></span>
+                Transient Growth
+              </div>
+              <p className="text-xs text-blue-700 leading-relaxed">
+                Even though <InlineMath math="\rho(G) < 1" />, the highly non-normal matrix <InlineMath math="G" /> causes the error norm to <strong>oscillate</strong> and even grow initially before eventually decaying. Notice how the error vector first converges to the dominant direction before steadily decreasing.
+              </p>
+            </div>
           </section>
 
           <section className="pt-4 border-t border-slate-100 mt-auto">
@@ -108,7 +113,7 @@ export default function Visualizer() {
                 <div className="flex items-center justify-between">
                   <label className="text-sm font-medium text-slate-700 flex items-center gap-2">
                     <span className="font-mono text-xs">θ</span>
-                    Initial Guess <InlineMath math="\mathbf{x}^{(0)}" />
+                    Initial Guess <InlineMath math="\\mathbf{x}^{(0)}" />
                   </label>
                   <span className="text-sm font-mono text-slate-500 bg-slate-100 px-2 py-0.5 rounded">{angleDeg}°</span>
                 </div>
