@@ -35,9 +35,9 @@ export default function CGSVisualizer() {
       case 0: return "Initial vectors $a_1, a_2, a_3$.";
       case 1: return "Normalize $a_1$ to get $q_1$. This gives $r_{11} = \\|a_1\\|$.";
       case 2: return "Project $a_2$ onto $q_1$. This gives $r_{12} = q_1^T a_2$.";
-      case 3: return "Subtract the projection from $a_2$ and normalize to get $q_2$. This gives $r_{22}$.";
-      case 4: return "Project $a_3$ onto $q_1$ and $q_2$. This gives $r_{13}$ and $r_{23}$.";
-      case 5: return "Subtract the projections from $a_3$ and normalize to get $q_3$. This gives $r_{33}$.";
+      case 3: return "Subtract the projection from $a_2$ and normalize to get $q_2$. This gives $r_{22} = \\|a_2 - r_{12}q_1\\|$.";
+      case 4: return "Project $a_3$ onto $q_1$ and $q_2$ independently. This gives $r_{13} = q_1^T a_3$ and $r_{23} = q_2^T a_3$.";
+      case 5: return "Subtract both projections from $a_3$ and normalize to get $q_3$. This gives $r_{33} = \\|a_3 - r_{13}q_1 - r_{23}q_2\\|$.";
       default: return "";
     }
   };
@@ -118,7 +118,7 @@ export default function CGSVisualizer() {
              <BlockMath math={`R = ${renderRMatrix()}`} />
           </div>
           <p className="text-xs text-slate-500 text-center">
-             Entries <InlineMath math="r_{ij} = q_i^T a_j" /> and <InlineMath math="r_{jj} = \|u_j\|" />
+             Entries <InlineMath math="r_{ij} = q_i^T a_j" /> and <InlineMath math="r_{jj} = \\|u_j\\|" />
           </p>
         </div>
 

@@ -98,7 +98,7 @@ export default function Visualizer() {
           <section>
             <h2 className="text-sm font-semibold text-slate-700 uppercase tracking-wider mb-3">Formulation</h2>
             <div className="text-sm overflow-x-auto space-y-2">
-              <BlockMath math="x_{k+1} = \frac{A x_k}{\|A x_k\|}" />
+              <BlockMath math="x_{k+1} = \\frac{A x_k}{\\|A x_k\\|}" />
               <p className="text-slate-600 mt-2 text-xs leading-relaxed">
                 By repeatedly multiplying a vector by <InlineMath math="A" /> and normalizing, the vector is increasingly dominated by the component along the eigenvector with the largest absolute eigenvalue.
               </p>
@@ -108,13 +108,13 @@ export default function Visualizer() {
           <section>
             <h2 className="text-sm font-semibold text-slate-700 uppercase tracking-wider mb-2">Geometric Model</h2>
             <div className="bg-slate-50 rounded-lg p-3 border border-slate-100 mb-4">
-              <BlockMath math="A = \begin{bmatrix} 2 & 1 \\ 0 & 1 \end{bmatrix}" />
-              <p className="text-xs text-slate-500 mt-2 text-center">Eigenvalues: <InlineMath math="\lambda_1 = 2, \lambda_2 = 1" /></p>
+              <BlockMath math="A = \\begin{bmatrix} 2 & 1 \\\\ 0 & 1 \\end{bmatrix}" />
+              <p className="text-xs text-slate-500 mt-2 text-center">Eigenvalues: <InlineMath math="\\lambda_1 = 2, \\lambda_2 = 1" /></p>
             </div>
 
             <ul className="text-sm text-slate-600 space-y-1.5 list-disc pl-4 marker:text-slate-400">
-              <li>Eigenvector <InlineMath math="p_1" /> (red) corresponds to <InlineMath math="\lambda_1 = 2" />.</li>
-              <li>Eigenvector <InlineMath math="p_2" /> (red) corresponds to <InlineMath math="\lambda_2 = 1" />.</li>
+              <li>Eigenvector <InlineMath math="p_1" /> (red) corresponds to <InlineMath math="\\lambda_1 = 2" />.</li>
+              <li>Eigenvector <InlineMath math="p_2" /> (red) corresponds to <InlineMath math="\\lambda_2 = 1" />.</li>
               <li>Notice how the component along <InlineMath math="p_1" /> grows twice as fast as the component along <InlineMath math="p_2" /> at each step.</li>
             </ul>
           </section>

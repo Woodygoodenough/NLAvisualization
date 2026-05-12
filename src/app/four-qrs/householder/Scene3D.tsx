@@ -165,7 +165,7 @@ export default function Scene3D({ step }: Scene3DProps) {
   const vArray: [number, number, number] | null = currentV ? [currentV.x, currentV.y, currentV.z] : null;
 
   return (
-    <Canvas camera={{ position: [4, 3, 5], fov: 45 }}>
+    <Canvas camera={{ position: [5, 4, 6], fov: 45 }}>
       <color attach="background" args={["#f8fafc"]} />
       <ambientLight intensity={0.6} />
       <directionalLight position={[10, 10, 5]} intensity={0.8} />
