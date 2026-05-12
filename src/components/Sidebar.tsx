@@ -5,13 +5,10 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { ChevronLeft, ChevronRight, ChevronDown, Home, ActivitySquare, Compass, MoreHorizontal, Layers } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { InlineMath } from "react-katex";
 
 const navItems = [
-  { name: "Dashboard", href: "/", icon: Home },
-  { name: "Conditioning of Matrix I", href: "/pointwise-conditioning", icon: ActivitySquare },
-  { name: "Conditioning of Matrix II", href: "/conditioning-matrix-2", icon: ActivitySquare },
-  { name: "Conditioning of LSE I", href: "/lse-stability", icon: ActivitySquare },
-  { name: "Conditioning of LSE II (Under Construction)", href: "/lse-stability-2", icon: ActivitySquare },
+  { name: "Dashboard", href: "/", icon: Home, disabled: false },
   {
     name: "Basics",
     icon: Layers,
@@ -21,27 +18,7 @@ const navItems = [
     ]
   },
   {
-    name: "Iterative Solver",
-    icon: Layers,
-    children: [
-      { name: "Bulge Chasing", href: "/bulge-chasing", disabled: false },
-      { name: "Batch Rotations", href: "/batch-rotations", disabled: false },
-      { name: "Implicit Q Theorem", href: "/implicit-q-theorem", disabled: false },
-      { name: "Eigen Solver", href: "/eigen-solver", disabled: false },
-      { name: "Arnoldi Iteration", href: "/arnoldi-iteration", disabled: false },
-      { name: "Power Iteration", href: "/power-iteration", disabled: false },
-      { name: "Conjugate Gradient", href: "/conjugate-gradient", disabled: false },
-    ]
-  },
-  {
-    name: "Cholesky",
-    icon: Layers,
-    children: [
-      { name: "Stability (No Pivoting)", href: "/cholesky/stability", disabled: false },
-    ]
-  },
-  {
-    name: "Four QRs",
+    name: "Gram-Schmidt Algorithms",
     icon: Layers,
     children: [
       { name: "Classical Gram-Schmidt", href: "/four-qrs/cgs", disabled: false },
@@ -50,16 +27,44 @@ const navItems = [
       { name: "Givens", href: "/four-qrs/givens", disabled: false },
     ]
   },
-  { name: "Other NLA Topics (coming soon)", href: "#", icon: Compass, disabled: true },
+  {
+    name: "Conditioning Analyses",
+    icon: Layers,
+    children: [
+      { name: "Conditioning of Matrix I", href: "/pointwise-conditioning", disabled: false },
+      { name: "Conditioning of Matrix II", href: "/conditioning-matrix-2", disabled: false },
+      { name: "Conditioning of LSE I", href: "/lse-stability", disabled: false },
+      { name: "Conditioning of LSE II (Under Construction)", href: "/lse-stability-2", disabled: false },
+    ]
+  },
+  {
+    name: "Iterative Methods",
+    icon: Layers,
+    children: [
+      { name: "1. Power Iteration — Dominant Eigenvector", href: "/power-iteration", disabled: false },
+      { name: "2. Power Iteration — Spectral Decay", titleNode: <span>2. Power Iteration — Spectral Decay (<InlineMath math="\rho(A)<1"/>)</span>, href: "/power-iteration-decay", disabled: false },
+      { name: "3. Arnoldi Iteration", href: "/arnoldi-iteration", disabled: false },
+      { name: "4. Conjugate Gradient", href: "/conjugate-gradient", disabled: false },
+      { name: "5. Batch Rotations", href: "/batch-rotations", disabled: false },
+      { name: "6. Bulge Chasing", href: "/bulge-chasing", disabled: false },
+      { name: "7. Implicit Q Theorem", href: "/implicit-q-theorem", disabled: false },
+      { name: "8. Eigen Solver", href: "/eigen-solver", disabled: false },
+    ]
+  },
+  {
+    name: "Temporary Catch-ALL",
+    icon: Layers,
+    children: [
+      { name: "Cholesky Stability (No Pivoting)", href: "/cholesky/stability", disabled: false },
+      { name: "Other NLA Topics (coming soon)", href: "#", disabled: true },
+    ]
+  }
 ];
 
 export function Sidebar() {
   const pathname = usePathname();
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>({
-    "Basics": true,
-    "Four QRs": true
-  });
+  const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>({});
 
   const toggleGroup = (name: string) => {
     setExpandedGroups(prev => ({ ...prev, [name]: !prev[name] }));
@@ -129,7 +134,7 @@ export function Sidebar() {
                             child.disabled && "cursor-not-allowed opacity-50"
                           )}
                         >
-                          <span className="truncate">{child.name}</span>
+                          <span className="truncate">{child.titleNode || child.name}</span>
                         </Link>
                       );
                     })}
