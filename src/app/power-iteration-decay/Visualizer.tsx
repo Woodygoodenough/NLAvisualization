@@ -83,7 +83,7 @@ export default function Visualizer() {
             <div className="text-sm overflow-x-auto space-y-2">
               <BlockMath math="x_{k+1} = A x_k" />
               <p className="text-slate-600 mt-2 text-xs leading-relaxed">
-                When all eigenvalues of <InlineMath math="A" /> have absolute value less than 1 (i.e. spectral radius <InlineMath math="\rho(A) < 1" />), repeatedly multiplying by <InlineMath math="A" /> causes the vector to decay toward the origin.
+                When all eigenvalues of <InlineMath math="A" /> have absolute value less than 1 (i.e. spectral radius <InlineMath math="\\rho(A) < 1" />), repeatedly multiplying by <InlineMath math="A" /> causes the vector to decay toward the origin.
               </p>
             </div>
           </section>
@@ -92,12 +92,12 @@ export default function Visualizer() {
             <h2 className="text-sm font-semibold text-slate-700 uppercase tracking-wider mb-2">Geometric Model</h2>
             <div className="bg-slate-50 rounded-lg p-3 border border-slate-100 mb-4">
               <BlockMath math="A = \begin{bmatrix} 0.8 & 0.3 \\ 0 & 0.5 \end{bmatrix}" />
-              <p className="text-xs text-slate-500 mt-2 text-center">Eigenvalues: <InlineMath math="\lambda_1 = 0.8, \lambda_2 = 0.5" /></p>
+              <p className="text-xs text-slate-500 mt-2 text-center">Eigenvalues: <InlineMath math="\\lambda_1 = 0.8, \lambda_2 = 0.5" /></p>
             </div>
 
             <ul className="text-sm text-slate-600 space-y-1.5 list-disc pl-4 marker:text-slate-400">
-              <li>Eigenvector <InlineMath math="p_1" /> (red) corresponds to <InlineMath math="\lambda_1 = 0.8" />.</li>
-              <li>Eigenvector <InlineMath math="p_2" /> (red) corresponds to <InlineMath math="\lambda_2 = 0.5" />.</li>
+              <li>Eigenvector <InlineMath math="p_1" /> (red) corresponds to <InlineMath math="\\lambda_1 = 0.8" />.</li>
+              <li>Eigenvector <InlineMath math="p_2" /> (red) corresponds to <InlineMath math="\\lambda_2 = 0.5" />.</li>
               <li>Notice how both components decay, but the component along <InlineMath math="p_2" /> decays much faster, meaning the vector trajectory curls into the <InlineMath math="p_1" /> axis as it shrinks to zero.</li>
             </ul>
           </section>

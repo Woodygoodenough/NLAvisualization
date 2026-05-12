@@ -91,7 +91,7 @@ export default function Visualizer() {
             <h2 className="text-sm font-semibold text-slate-700 uppercase tracking-wider mb-2">Geometric Model</h2>
             <div className="bg-slate-50 rounded-lg p-3 border border-slate-100 mb-4">
               <BlockMath math="G = \begin{bmatrix} 0.8 & 2.0 \\ 0 & 0.5 \end{bmatrix}" />
-              <p className="text-xs text-slate-500 mt-2 text-center">Spectral Radius: <InlineMath math="\rho(G) = 0.8 < 1" /></p>
+              <p className="text-xs text-slate-500 mt-2 text-center">Spectral Radius: <InlineMath math="\\rho(G) = 0.8 < 1" /></p>
             </div>
 
             <div className="bg-blue-50 border border-blue-200 rounded-md p-3">
@@ -100,7 +100,7 @@ export default function Visualizer() {
                 Transient Growth
               </div>
               <p className="text-xs text-blue-700 leading-relaxed">
-                Even though <InlineMath math="\rho(G) < 1" />, the highly non-normal matrix <InlineMath math="G" /> causes the error norm to <strong>oscillate</strong> and even grow initially before eventually decaying. Notice how the error vector first converges to the dominant direction before steadily decreasing.
+                Even though <InlineMath math="\\rho(G) < 1" />, the highly non-normal matrix <InlineMath math="G" /> causes the error norm to <strong>oscillate</strong> and even grow initially before eventually decaying. Notice how the error vector first converges to the dominant direction before steadily decreasing.
               </p>
             </div>
           </section>

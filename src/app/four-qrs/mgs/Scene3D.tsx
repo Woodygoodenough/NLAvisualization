@@ -64,9 +64,9 @@ export default function Scene3D({ step }: Scene3DProps) {
   // Define fixed, non-degenerate, non-orthogonal 3x3 matrix A = [a1, a2, a3]
   const { a1, a2, a3 } = useMemo(() => {
     return {
-      a1: new THREE.Vector3(2.0, 1.0, 0.4),
-      a2: new THREE.Vector3(1.0, 2.4, 0.6),
-      a3: new THREE.Vector3(0.4, 0.8, 3.0)
+      a1: new THREE.Vector3(2.5, 1.0, 0.5),
+      a2: new THREE.Vector3(1.0, 2.5, 0.8),
+      a3: new THREE.Vector3(0.5, 1.2, 2.5)
     };
   }, []);
 
@@ -118,7 +118,7 @@ export default function Scene3D({ step }: Scene3DProps) {
   const aOpacity = step === 0 ? 1.0 : 0.25;
 
   return (
-    <Canvas camera={{ position: [3, 2, 4], fov: 45 }}>
+    <Canvas camera={{ position: [5, 4, 6], fov: 45 }}>
       <color attach="background" args={['#f8fafc']} />
 
       <ambientLight intensity={0.5} />
