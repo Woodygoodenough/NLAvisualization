@@ -45,11 +45,11 @@ const VectorArrow = ({ start, end, color, label, showLabel = true, labelOffset =
       {showLabel && opacity > 0.1 && (
         <Html position={midPoint} center style={{ pointerEvents: 'none' }}>
           <div
-            className="font-mono text-[10px] font-bold px-1 py-0.5 rounded bg-white/80 backdrop-blur-sm shadow-sm whitespace-nowrap"
+            className="font-mono text-sm font-bold px-1.5 py-0.5 rounded bg-white/95 backdrop-blur-md shadow-sm whitespace-nowrap"
             style={{
               color,
-              border: `1px solid ${color}40`,
-              opacity: opacity
+              border: `1px solid ${color}60`,
+              opacity: Math.max(opacity, 0.5) // keep it slightly more legible even when faint
             }}
           >
             {label}
