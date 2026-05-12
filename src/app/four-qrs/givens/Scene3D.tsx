@@ -58,8 +58,14 @@ function AnimatedVector({ endpoint, color, label }: { endpoint: [number, number,
         </mesh>
       </group>
       <group ref={textRef}>
-        <Html position={[0, 0, 0]} center>
-          <div className="font-mono" style={{ color: color, fontSize: '1.2rem', fontWeight: 'bold', textShadow: '1px 1px 2px white, -1px -1px 2px white, 1px -1px 2px white, -1px 1px 2px white', userSelect: 'none' }}>
+        <Html position={[0, 0, 0]} center style={{ pointerEvents: 'none' }}>
+          <div
+            className="font-mono text-sm font-bold px-1.5 py-0.5 rounded bg-white/95 backdrop-blur-md shadow-sm whitespace-nowrap"
+            style={{
+              color,
+              border: `1px solid ${color}60`
+            }}
+          >
             {label}
           </div>
         </Html>
