@@ -26,54 +26,37 @@ export default function Visualizer() {
   }
 
   // The matrix A = [2 1; 0 1]
-  const a11 = 2, a12 = 1;
-  const a21 = 0, a22 = 1;
+  const a11 = 0.8, a12 = 0.3;
+  const a21 = 0, a22 = 0.5;
 
   const handleNext = () => {
     if (iteration >= 30) return;
 
     if (!hasStarted) {
       setHasStarted(true);
-      // We are at x_0. Next step is Ax_0
-      setVectorHistory([[Math.cos(initialAngleRad), Math.sin(initialAngleRad)]]);
-      setSubStep("Ax");
-      return;
     }
 
-    if (subStep === "x") {
-      // Currently showing x_k. Next is Ax_k
-      setSubStep("Ax");
-    } else {
-      // Currently showing Ax_k. Next is x_{k+1} (normalized)
-      const lastVec = vectorHistory[vectorHistory.length - 1];
+    const lastVec = vectorHistory.length > 0 ? vectorHistory[vectorHistory.length - 1] : currentVec;
 
-      // Calculate Ax
-      let ax = a11 * lastVec[0] + a12 * lastVec[1];
-      let ay = a21 * lastVec[0] + a22 * lastVec[1];
+    // Calculate Ax
+    let ax = a11 * lastVec[0] + a12 * lastVec[1];
+    let ay = a21 * lastVec[0] + a22 * lastVec[1];
 
-      // Degenerate case check: If initial vector was exactly on p2 = (-1/sqrt(2), 1/sqrt(2)),
-      // which corresponds to an angle of 135 deg or 315 deg.
-      // To prevent floating point drift, if the angle is exactly 135 or 315, we enforce the direction.
-      if (angleDeg === 135 || angleDeg === 315) {
-        // Project onto p2 direction (-1, 1) strictly
-        const dot = (-ax + ay) / 2;
-        ax = -dot;
-        ay = dot;
-      }
-
-      // Normalize
-      const len = Math.sqrt(ax * ax + ay * ay);
-      let nextVec: [number, number];
-      if (len > 0) {
-        nextVec = [ax / len, ay / len];
-      } else {
-        nextVec = [0, 0];
-      }
-
-      setVectorHistory([...vectorHistory, nextVec]);
-      setSubStep("x");
-      setIteration(iteration + 1);
+    if (angleDeg === 135 || angleDeg === 315) {
+      // Degenerate case for this new matrix
+      // A = [0.8 0.3; 0 0.5]
+      // L1 = 0.8, L2 = 0.5
+      // p1 = (1, 0)
+      // p2 => (0.8-0.5)x + 0.3y = 0 => 0.3x + 0.3y = 0 => x = -y. So p2 = (-1/sqrt(2), 1/sqrt(2))
+      // Same exact eigenvectors, just different eigenvalues!
+      const dot = (-ax + ay) / 2;
+      ax = -dot;
+      ay = dot;
     }
+
+    setVectorHistory([...vectorHistory, [ax, ay]]);
+    setSubStep("Ax"); // Always just show Ax shrinking
+    setIteration(iteration + 1);
   };
 
   const handleReset = () => {
@@ -89,18 +72,18 @@ export default function Visualizer() {
       <div className="w-1/3 min-w-[320px] max-w-[400px] border-r bg-white p-6 overflow-y-auto flex flex-col shadow-sm z-10">
         <div className="mb-6">
           <div className="flex items-center gap-2 mb-1">
-            <h1 className="text-2xl font-bold text-slate-900 tracking-tight">1. Power Iteration — Dominant Eigenvector</h1>
+            <h1 className="text-2xl font-bold text-slate-900 tracking-tight">2. Power Iteration — Spectral Decay</h1>
           </div>
-          <p className="text-sm text-slate-500 mt-1">Visualizing vector convergence to the dominant eigenvector</p>
+          <p className="text-sm text-slate-500 mt-1">Visualizing vector decay when spectral radius ρ(A) &lt; 1</p>
         </div>
 
         <div className="flex-1 space-y-6">
           <section>
             <h2 className="text-sm font-semibold text-slate-700 uppercase tracking-wider mb-3">Formulation</h2>
             <div className="text-sm overflow-x-auto space-y-2">
-              <BlockMath math="x_{k+1} = \frac{A x_k}{\|A x_k\|}" />
+              <BlockMath math="x_{k+1} = A x_k" />
               <p className="text-slate-600 mt-2 text-xs leading-relaxed">
-                By repeatedly multiplying a vector by <InlineMath math="A" /> and normalizing, the vector is increasingly dominated by the component along the eigenvector with the largest absolute eigenvalue.
+                When all eigenvalues of <InlineMath math="A" /> have absolute value less than 1 (i.e. spectral radius <InlineMath math="\rho(A) < 1" />), repeatedly multiplying by <InlineMath math="A" /> causes the vector to decay toward the origin.
               </p>
             </div>
           </section>
@@ -108,14 +91,14 @@ export default function Visualizer() {
           <section>
             <h2 className="text-sm font-semibold text-slate-700 uppercase tracking-wider mb-2">Geometric Model</h2>
             <div className="bg-slate-50 rounded-lg p-3 border border-slate-100 mb-4">
-              <BlockMath math="A = \begin{bmatrix} 2 & 1 \\ 0 & 1 \end{bmatrix}" />
-              <p className="text-xs text-slate-500 mt-2 text-center">Eigenvalues: <InlineMath math="\lambda_1 = 2, \lambda_2 = 1" /></p>
+              <BlockMath math="A = \begin{bmatrix} 0.8 & 0.3 \\ 0 & 0.5 \end{bmatrix}" />
+              <p className="text-xs text-slate-500 mt-2 text-center">Eigenvalues: <InlineMath math="\lambda_1 = 0.8, \lambda_2 = 0.5" /></p>
             </div>
 
             <ul className="text-sm text-slate-600 space-y-1.5 list-disc pl-4 marker:text-slate-400">
-              <li>Eigenvector <InlineMath math="p_1" /> (red) corresponds to <InlineMath math="\lambda_1 = 2" />.</li>
-              <li>Eigenvector <InlineMath math="p_2" /> (red) corresponds to <InlineMath math="\lambda_2 = 1" />.</li>
-              <li>Notice how the component along <InlineMath math="p_1" /> grows twice as fast as the component along <InlineMath math="p_2" /> at each step.</li>
+              <li>Eigenvector <InlineMath math="p_1" /> (red) corresponds to <InlineMath math="\lambda_1 = 0.8" />.</li>
+              <li>Eigenvector <InlineMath math="p_2" /> (red) corresponds to <InlineMath math="\lambda_2 = 0.5" />.</li>
+              <li>Notice how both components decay, but the component along <InlineMath math="p_2" /> decays much faster, meaning the vector trajectory curls into the <InlineMath math="p_1" /> axis as it shrinks to zero.</li>
             </ul>
           </section>
 
@@ -161,7 +144,7 @@ export default function Visualizer() {
                     disabled={iteration >= 30}
                     className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed rounded-md transition-colors shadow-sm"
                   >
-                    Next ({subStep === "x" ? "Multiply A" : "Normalize"})
+                    Next (Multiply A)
                   </button>
                 </div>
               </div>
