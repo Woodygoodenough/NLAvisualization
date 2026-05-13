@@ -211,18 +211,20 @@ export default function Scene3D({ step }: Scene3DProps) {
       <AnimatedVector endpoint={[currentA[1].x, currentA[1].y, currentA[1].z]} color="#3b82f6" label="a₂" />
       <AnimatedVector endpoint={[currentA[2].x, currentA[2].y, currentA[2].z]} color="#10b981" label="a₃" />
 
-      {/* The reflection normal vector (if active) */}
-      {currentV && (
-        <AnimatedVector endpoint={[currentV.x, currentV.y, currentV.z]} color="#a855f7" label="v" />
-      )}
 
-      {/* The target vector (dotted line) */}
+
+      {/* The target vector and normal connection (dotted line) */}
       {showPlane && currentTarget && currentSource && (
         <group>
            {/* Dotted vector to target */}
            <Line points={[[0,0,0], [currentTarget.x, currentTarget.y, currentTarget.z]]} color="#f97316" lineWidth={2} dashed dashScale={10} dashSize={0.2} gapSize={0.2} />
-           {/* Dotted line connecting original to target showing v is normal to mirror */}
-           <Line points={[[currentSource.x, currentSource.y, currentSource.z], [currentTarget.x, currentTarget.y, currentTarget.z]]} color="#a855f7" lineWidth={1} dashed dashScale={10} dashSize={0.1} gapSize={0.1} />
+           {/* Dotted line connecting original to target representing normal 'v' */}
+           <Line points={[[currentSource.x, currentSource.y, currentSource.z], [currentTarget.x, currentTarget.y, currentTarget.z]]} color="#a855f7" lineWidth={2} dashed dashScale={10} dashSize={0.1} gapSize={0.1} />
+           <Html position={[(currentSource.x + currentTarget.x)/2, (currentSource.y + currentTarget.y)/2 + 0.3, (currentSource.z + currentTarget.z)/2]} center style={{ pointerEvents: 'none' }}>
+             <div className="font-mono text-sm font-bold px-1.5 py-0.5 rounded bg-white/95 backdrop-blur-md shadow-sm whitespace-nowrap" style={{ color: '#a855f7', border: '1px solid #a855f760' }}>
+               v
+             </div>
+           </Html>
         </group>
       )}
 
