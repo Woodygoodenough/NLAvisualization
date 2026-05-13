@@ -72,21 +72,21 @@ export default function HouseholderVisualizer() {
 
     const getStepDescription = (s: number): string[] => {
     switch (s) {
-      case 0: return ["Initial matrix $A$. The columns are shown as vectors."];
+      case 0: return ["Initial matrix $A$. The columns are shown as vectors $a_1, a_2, a_3$."];
       case 1: return [
-        "Project $a_1$ to the subspace of span($e_1$).",
-        "The normal vector can be chosen as $v_1 = a_1 \\pm \\|a_1\\| e_1$.",
-        "The plane of reflection $H_1$ is thus orthogonal to $v_1$."
+        "Identify the target vector in $\\text{span}\\{e_1\\}$.",
+        "To maximize numerical stability, we choose $v_1 = a_1 + \\text{sgn}((a_1)_1)\\|a_1\\| e_1$.",
+        "The plane of reflection $H_1$ is orthogonal to $v_1$."
       ];
-      case 2: return ["Apply $H_1 = I - 2 \\frac{v_1 v_1^T}{\\|v_1\\|^2}$ to all of the vectors, so that we get $a_1^{(2)}, a_2^{(2)}, a_3^{(2)}$."];
+      case 2: return ["Apply $H_1 = I - 2 \\frac{v_1 v_1^T}{\\|v_1\\|^2}$ to all vectors, resulting in $a_1^{(2)}, a_2^{(2)}, a_3^{(2)}$."];
       case 3: return [
-        "Project $a_2^{(2)}$ to the subspace of span($e_1, e_2$) (span defined by the light blue reflection plane).",
-        "The normal vector is $v_2$ in the subspace orthogonal to $e_1$.",
-        "The plane of reflection $H_2$ is thus orthogonal to $v_2$."
+        "Identify the target for $a_2^{(2)}$ in $\\text{span}\\{e_1, e_2\\}$ (indicated by the faint yellow plane).",
+        "We choose $v_2 = a_2^{(2)} + \\text{sgn}((a_2^{(2)})_2)\\|a_2^{(2)}\\| e_2$ in the subspace orthogonal to $e_1$.",
+        "The plane of reflection $H_2$ is orthogonal to $v_2$."
       ];
       case 4: return [
-        "Apply $H_2 = I - 2 \\frac{v_2 v_2^T}{\\|v_2\\|^2}$ to all vectors.",
-        "And $A$ has evolved into $R$."
+        "Apply $H_2 = I - 2 \\frac{v_2 v_2^T}{\\|v_2\\|^2}$ to all vectors, resulting in $a_1^{(3)}, a_2^{(3)}, a_3^{(3)}$.",
+        "The matrix $A$ has now evolved into the upper triangular matrix $R$."
       ];
       default: return [];
     }

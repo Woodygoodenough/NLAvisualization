@@ -172,7 +172,9 @@ export default function Scene3D({ step }: Scene3DProps) {
     showPlane = true;
   } else if (step === 2) {
     currentA = A1;
-    currentV = v1; // still showing v1
+    currentV = v1;
+    currentSource = x1;
+    currentTarget = target1;
     showPlane = true;
   } else if (step === 3) {
     currentA = A1;
@@ -183,10 +185,22 @@ export default function Scene3D({ step }: Scene3DProps) {
   } else if (step === 4) {
     currentA = A2;
     currentV = v2;
+    currentSource = A1[1];
+    currentTarget = target2;
     showPlane = true;
-  } else {
-    currentA = A2;
   }
+
+
+  // Determine labels based on step
+  const getSuperscript = () => {
+    if (step >= 4) return "⁽³⁾";
+    if (step >= 2) return "⁽²⁾";
+    return "";
+  };
+
+  const l1 = `a₁${getSuperscript()}`;
+  const l2 = `a₂${getSuperscript()}`;
+  const l3 = `a₃${getSuperscript()}`;
 
   const vArray: [number, number, number] | null = currentV ? [currentV.x, currentV.y, currentV.z] : null;
 
@@ -214,9 +228,9 @@ export default function Scene3D({ step }: Scene3DProps) {
       <AnimatedVector endpoint={[0, 0, 1]} color="#94a3b8" label="e₃" />
 
       {/* The 3 column vectors of the matrix */}
-      <AnimatedVector endpoint={[currentA[0].x, currentA[0].y, currentA[0].z]} color="#ef4444" label="a₁" />
-      <AnimatedVector endpoint={[currentA[1].x, currentA[1].y, currentA[1].z]} color="#3b82f6" label="a₂" />
-      <AnimatedVector endpoint={[currentA[2].x, currentA[2].y, currentA[2].z]} color="#10b981" label="a₃" />
+      <AnimatedVector endpoint={[currentA[0].x, currentA[0].y, currentA[0].z]} color="#ef4444" label={l1} />
+      <AnimatedVector endpoint={[currentA[1].x, currentA[1].y, currentA[1].z]} color="#3b82f6" label={l2} />
+      <AnimatedVector endpoint={[currentA[2].x, currentA[2].y, currentA[2].z]} color="#10b981" label={l3} />
 
 
 
@@ -227,12 +241,36 @@ export default function Scene3D({ step }: Scene3DProps) {
            <Line points={[[0,0,0], [currentTarget.x, currentTarget.y, currentTarget.z]]} color="#f97316" lineWidth={2} dashed dashScale={10} dashSize={0.2} gapSize={0.2} />
            {/* Dotted line connecting original to target representing normal 'v' */}
            <Line points={[[currentSource.x, currentSource.y, currentSource.z], [currentTarget.x, currentTarget.y, currentTarget.z]]} color="#a855f7" lineWidth={2} dashed dashScale={10} dashSize={0.1} gapSize={0.1} />
-           <Html position={[(currentSource.x + currentTarget.x)/2, (currentSource.y + currentTarget.y)/2 + 0.3, (currentSource.z + currentTarget.z)/2]} center style={{ pointerEvents: 'none' }}>
+
+           {/* Arrowhead for v at the target end */}
+           <mesh
+             position={[currentTarget.x, currentTarget.y, currentTarget.z]}
+             quaternion={new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), currentTarget.clone().sub(currentSource).normalize())}
+           >
+             <coneGeometry args={[0.06, 0.2, 8]} />
+             <meshBasicMaterial color="#a855f7" />
+           </mesh>
+
+           {/* Label v moved closer to the arrowhead */}
+           <Html position={[currentTarget.x * 0.9 + currentSource.x * 0.1, currentTarget.y * 0.9 + currentSource.y * 0.1 + 0.3, currentTarget.z * 0.9 + currentSource.z * 0.1]} center style={{ pointerEvents: 'none' }}>
              <div className="font-mono text-sm font-bold px-1.5 py-0.5 rounded bg-white/95 backdrop-blur-md shadow-sm whitespace-nowrap" style={{ color: '#a855f7', border: '1px solid #a855f760' }}>
                v
              </div>
            </Html>
         </group>
+      )}
+
+            {/* Subspan Plane for e1, e2 (XY plane) visible in step 3 and 4 */}
+      {(step === 3 || step === 4) && (
+        <mesh position={[0, 0, 0]}>
+           <planeGeometry args={[6, 6]} />
+           <meshBasicMaterial color="#fef08a" transparent opacity={0.3} side={THREE.DoubleSide} depthWrite={false} />
+           <Html position={[2.5, 2.5, 0]} center style={{ pointerEvents: 'none' }}>
+             <div className="font-mono text-xs font-bold px-1.5 py-0.5 rounded bg-white/50 backdrop-blur-sm shadow-sm whitespace-nowrap" style={{ color: '#ca8a04', border: '1px solid #ca8a0440' }}>
+               span{`{e₁, e₂}`}
+             </div>
+           </Html>
+        </mesh>
       )}
 
       {/* The reflection plane */}
