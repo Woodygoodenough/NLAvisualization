@@ -70,14 +70,25 @@ export default function HouseholderVisualizer() {
     return `\\begin{bmatrix} ${row1} \\\\[0.5em] ${row2} \\\\[0.5em] ${row3} \\end{bmatrix}`;
   };
 
-  const getStepDescription = (s: number) => {
+    const getStepDescription = (s: number): string[] => {
     switch (s) {
-      case 0: return "Initial matrix $A$. The columns are shown as vectors.";
-      case 1: return "Construct the normal vector $v_1 = a_1 - \\|a_1\\| e_1$. The plane of reflection is orthogonal to $v_1$.";
-      case 2: return "Apply $H_1 = I - 2 \\frac{v_1 v_1^T}{\\|v_1\\|^2}$ to all columns. The first column aligns with $e_1$.";
-      case 3: return "Construct $v_2 = a_2^{(2)} - \\|a_2^{(2)}\\| e_2$ in the subspace orthogonal to $e_1$.";
-      case 4: return "Apply $H_2$ to all columns. The second column moves into the $e_1$-$e_2$ plane, and the matrix becomes upper triangular $R$.";
-      default: return "";
+      case 0: return ["Initial matrix $A$. The columns are shown as vectors."];
+      case 1: return [
+        "Project $a_1$ to the subspace of span($e_1$).",
+        "The normal vector can be chosen as $v_1 = a_1 \\pm \\|a_1\\| e_1$.",
+        "The plane of reflection $H_1$ is thus orthogonal to $v_1$."
+      ];
+      case 2: return ["Apply $H_1 = I - 2 \\frac{v_1 v_1^T}{\\|v_1\\|^2}$ to all of the vectors, so that we get $a_1^{(2)}, a_2^{(2)}, a_3^{(2)}$."];
+      case 3: return [
+        "Project $a_2^{(2)}$ to the subspace of span($e_1, e_2$) (span defined by the light blue reflection plane).",
+        "The normal vector is $v_2$ in the subspace orthogonal to $e_1$.",
+        "The plane of reflection $H_2$ is thus orthogonal to $v_2$."
+      ];
+      case 4: return [
+        "Apply $H_2 = I - 2 \\frac{v_2 v_2^T}{\\|v_2\\|^2}$ to all vectors.",
+        "And $A$ has evolved into $R$."
+      ];
+      default: return [];
     }
   };
 
@@ -137,12 +148,19 @@ export default function HouseholderVisualizer() {
             </div>
           </div>
 
-          <div className="bg-indigo-50/50 border border-indigo-100 p-4 rounded-lg text-sm text-indigo-900 min-h-[80px] flex items-center">
-            <span>
-              {getStepDescription(step).split('$').map((part, index) =>
-                index % 2 === 1 ? <InlineMath key={index} math={part} /> : part
-              )}
-            </span>
+                    <div className="bg-indigo-50/50 border border-indigo-100 p-4 rounded-lg text-sm text-indigo-900 min-h-[80px] flex items-center">
+            <div className="space-y-2 w-full">
+              {getStepDescription(step).map((line, lineIdx) => (
+                <div key={lineIdx} className="flex items-start">
+                  {getStepDescription(step).length > 1 && <span className="mr-2 mt-1 w-1.5 h-1.5 rounded-full bg-indigo-400 flex-shrink-0"></span>}
+                  <span>
+                    {line.split('$').map((part, index) =>
+                      index % 2 === 1 ? <InlineMath key={index} math={part} /> : part
+                    )}
+                  </span>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 
