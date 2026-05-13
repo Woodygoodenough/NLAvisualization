@@ -2,7 +2,7 @@
 
 import React, { useMemo, useRef, useEffect } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { OrbitControls, Grid, Html } from "@react-three/drei";
+import { OrbitControls, Grid, Html, Line } from "@react-three/drei";
 import * as THREE from "three";
 import { useSpring, animated } from "@react-spring/three";
 
@@ -94,7 +94,7 @@ function ReflectionPlane({ normal, visible }: { normal: [number, number, number]
 
   return (
     <animated.mesh ref={meshRef} scale={scale}>
-      <planeGeometry args={[10, 10]} />
+      <planeGeometry args={[4, 4]} />
       <animated.meshStandardMaterial
         color="#88ccff"
         transparent
@@ -112,9 +112,9 @@ interface Scene3DProps {
 
 export default function Scene3D({ step }: Scene3DProps) {
   // A = [a1, a2, a3]
-  const a1_0 = new THREE.Vector3(1, 1, 1);
-  const a2_0 = new THREE.Vector3(1, 2, 0);
-  const a3_0 = new THREE.Vector3(0, 1, 2);
+  const a1_0 = new THREE.Vector3(2.5, 1.0, 0.5);
+  const a2_0 = new THREE.Vector3(1.0, 2.5, 0.8);
+  const a3_0 = new THREE.Vector3(0.5, 1.2, 2.5);
 
   const A0 = [a1_0, a2_0, a3_0];
 
@@ -146,26 +146,39 @@ export default function Scene3D({ step }: Scene3DProps) {
   // Determine current matrix based on step
   let currentA = A0;
   let currentV: THREE.Vector3 | null = null;
+  let currentTarget: THREE.Vector3 | null = null;
+  let currentSource: THREE.Vector3 | null = null;
   let showPlane = false;
+
+  const target1 = e1.clone().multiplyScalar(-sign1 * x1.length());
+  const target2 = A1[1].clone();
+  target2.y = -sign2 * x2.length();
+  target2.z = 0; // x remains the same, y,z map to length * e2
 
   if (step === 0) {
     currentA = A0;
   } else if (step === 1) {
     currentA = A0;
     currentV = v1;
+    currentSource = x1;
+    currentTarget = target1;
     showPlane = true;
   } else if (step === 2) {
     currentA = A1;
-    currentV = v1;
+    currentV = v1; // still showing v1
     showPlane = true;
   } else if (step === 3) {
     currentA = A1;
     currentV = v2;
+    currentSource = A1[1];
+    currentTarget = target2;
     showPlane = true;
   } else if (step === 4) {
     currentA = A2;
     currentV = v2;
     showPlane = true;
+  } else {
+    currentA = A2;
   }
 
   const vArray: [number, number, number] | null = currentV ? [currentV.x, currentV.y, currentV.z] : null;
@@ -201,6 +214,16 @@ export default function Scene3D({ step }: Scene3DProps) {
       {/* The reflection normal vector (if active) */}
       {currentV && (
         <AnimatedVector endpoint={[currentV.x, currentV.y, currentV.z]} color="#a855f7" label="v" />
+      )}
+
+      {/* The target vector (dotted line) */}
+      {showPlane && currentTarget && currentSource && (
+        <group>
+           {/* Dotted vector to target */}
+           <Line points={[[0,0,0], [currentTarget.x, currentTarget.y, currentTarget.z]]} color="#f97316" lineWidth={2} dashed dashScale={10} dashSize={0.2} gapSize={0.2} />
+           {/* Dotted line connecting original to target showing v is normal to mirror */}
+           <Line points={[[currentSource.x, currentSource.y, currentSource.z], [currentTarget.x, currentTarget.y, currentTarget.z]]} color="#a855f7" lineWidth={1} dashed dashScale={10} dashSize={0.1} gapSize={0.1} />
+        </group>
       )}
 
       {/* The reflection plane */}
