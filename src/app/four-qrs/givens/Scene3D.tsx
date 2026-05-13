@@ -213,13 +213,13 @@ export default function Scene3D({ step }: Scene3DProps) {
       />
 
       {/* The standard basis axes */}
-      <AnimatedVector endpoint={[1, 0, 0]} color="#94a3b8" label="e1" />
-      <AnimatedVector endpoint={[0, 1, 0]} color="#94a3b8" label="e2" />
-      <AnimatedVector endpoint={[0, 0, 1]} color="#94a3b8" label="e3" />
+      <AnimatedVector endpoint={[1, 0, 0]} color="#94a3b8" label="e₁" />
+      <AnimatedVector endpoint={[0, 1, 0]} color="#94a3b8" label="e₂" />
+      <AnimatedVector endpoint={[0, 0, 1]} color="#94a3b8" label="e₃" />
 
-      <AnimatedVector endpoint={[currentA[0].x, currentA[0].y, currentA[0].z]} color="#ef4444" label="a1" />
-      <AnimatedVector endpoint={[currentA[1].x, currentA[1].y, currentA[1].z]} color="#3b82f6" label="a2" />
-      <AnimatedVector endpoint={[currentA[2].x, currentA[2].y, currentA[2].z]} color="#10b981" label="a3" />
+      <AnimatedVector endpoint={[currentA[0].x, currentA[0].y, currentA[0].z]} color="#ef4444" label="a₁" />
+      <AnimatedVector endpoint={[currentA[1].x, currentA[1].y, currentA[1].z]} color="#3b82f6" label="a₂" />
+      <AnimatedVector endpoint={[currentA[2].x, currentA[2].y, currentA[2].z]} color="#10b981" label="a₃" />
 
       {activePlane && (
         <RotationPlane i={activePlane[0]} j={activePlane[1]} visible={showPlane} />
