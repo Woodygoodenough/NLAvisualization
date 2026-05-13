@@ -102,6 +102,13 @@ function ReflectionPlane({ normal, visible }: { normal: [number, number, number]
         side={THREE.DoubleSide}
         depthWrite={false}
       />
+      {visible && normal && (
+        <Html position={[1.5, 1.5, 0]} center style={{ pointerEvents: 'none' }}>
+          <div className="font-mono text-sm font-bold px-1.5 py-0.5 rounded bg-white/95 backdrop-blur-md shadow-sm whitespace-nowrap" style={{ color: '#0ea5e9', border: '1px solid #0ea5e960' }}>
+            H
+          </div>
+        </Html>
+      )}
     </animated.mesh>
   );
 }
