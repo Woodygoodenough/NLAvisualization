@@ -15,7 +15,7 @@ function AnimatedVector({ endpoint, color, label }: { endpoint: [number, number,
 
   const { end } = useSpring({
     end: endpoint,
-    config: { mass: 1, tension: 120, friction: 14 }
+    config: { mass: 1, tension: 150, friction: 50, clamp: true }
   });
 
   useFrame(() => {
@@ -75,7 +75,7 @@ function AnimatedVector({ endpoint, color, label }: { endpoint: [number, number,
   );
 }
 
-function ReflectionPlane({ normal, visible }: { normal: [number, number, number] | null, visible: boolean }) {
+function ReflectionPlane({ normal, visible, step }: { normal: [number, number, number] | null, visible: boolean, step: number }) {
   const meshRef = useRef<THREE.Mesh>(null);
 
   const { opacity, scale } = useSpring({
@@ -254,13 +254,22 @@ export default function Scene3D({ step }: Scene3DProps) {
            {/* Label v moved closer to the arrowhead */}
            <Html position={[currentTarget.x * 0.9 + currentSource.x * 0.1, currentTarget.y * 0.9 + currentSource.y * 0.1 + 0.3, currentTarget.z * 0.9 + currentSource.z * 0.1]} center style={{ pointerEvents: 'none' }}>
              <div className="font-mono text-sm font-bold px-1.5 py-0.5 rounded bg-white/95 backdrop-blur-md shadow-sm whitespace-nowrap" style={{ color: '#a855f7', border: '1px solid #a855f760' }}>
-               v
+               {step >= 3 ? 'v₂' : 'v₁'}
              </div>
            </Html>
         </group>
       )}
 
-            {/* Subspan Plane for e1, e2 (XY plane) visible in step 3 and 4 */}
+                  {/* Subspan for e1 (X axis) visible in step 1 and 2 */}
+      {(step === 1 || step === 2) && (
+        <Html position={[3, 0.2, 0]} center style={{ pointerEvents: 'none' }}>
+          <div className="font-mono text-xs font-bold px-1.5 py-0.5 rounded bg-white/50 backdrop-blur-sm shadow-sm whitespace-nowrap" style={{ color: '#ca8a04', border: '1px solid #ca8a0440' }}>
+            span{`{e₁}`}
+          </div>
+        </Html>
+      )}
+
+      {/* Subspan Plane for e1, e2 (XY plane) visible in step 3 and 4 */}
       {(step === 3 || step === 4) && (
         <mesh position={[0, 0, 0]}>
            <planeGeometry args={[6, 6]} />
@@ -274,7 +283,7 @@ export default function Scene3D({ step }: Scene3DProps) {
       )}
 
       {/* The reflection plane */}
-      <ReflectionPlane normal={vArray} visible={showPlane} />
+      <ReflectionPlane normal={vArray} visible={showPlane} step={step} />
 
       <OrbitControls makeDefault />
     </Canvas>
